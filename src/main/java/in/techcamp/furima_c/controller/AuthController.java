@@ -19,23 +19,25 @@ public class AuthController {
 
   private final UserService userService;
 
+  //ログイン画面
   @GetMapping("/sign_in")
   public String showSignInForm() {
     return "users/sign_in";
   }
 
+  // 新規登録画面
   @GetMapping("/sign_up")
   public String showSignUpForm(@ModelAttribute("userDto") UserDto userDto) {
     return "users/sign_up";
   }
 
+  //アカウント作成
   @PostMapping("/sign_up")
   public String signUp(
       @Valid @ModelAttribute("userDto") UserDto userDto,
       BindingResult bindingResult,
       Model model
   ) {
-    // 1. Dtoのバリデーションエラーチェック
     if (bindingResult.hasErrors()) {
       return "users/sign_up";
     }
@@ -44,7 +46,6 @@ public class AuthController {
       userService.registerUser(userDto);
       return "redirect:/users/sign_in?registered=true";
     } catch (IllegalArgumentException e) {
-      // 2. サービス層で発生した例外（メールアドレス重複・パスワード不一致等）をエラーとして追加
       bindingResult.reject("registrationError", e.getMessage());
       return "users/sign_up";
     }

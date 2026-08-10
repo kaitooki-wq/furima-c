@@ -32,11 +32,11 @@ public class SecurityConfig {
             .requestMatchers(PathRequest.toStaticResources().atCommonLocations()).permitAll()
             .requestMatchers("/css/**", "/js/**", "/images/**", "/uploads/**").permitAll()
 
-            // 認証不要でアクセス許可するパス (ワイルドカードで配下を網羅)
+            // 認証不要でアクセス許可するパス
             .requestMatchers(
                 "/",
                 "/users/sign_in/**",
-                "/users/sign_up/**",  // ← sign_up, sign_up/, sign_up?error 等をすべて許可
+                "/users/sign_up/**",  
                 "/items",
                 "/items/*",
                 "/items/search"
@@ -48,7 +48,7 @@ public class SecurityConfig {
         .formLogin(login -> login
             .loginProcessingUrl("/users/sign_in")
             .loginPage("/users/sign_in")
-            .defaultSuccessUrl("/", true)
+            .defaultSuccessUrl("/")
             .failureUrl("/users/sign_in?error=true")
             .usernameParameter("email")
             .passwordParameter("password")

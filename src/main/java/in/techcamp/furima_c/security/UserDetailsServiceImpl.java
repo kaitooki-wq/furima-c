@@ -7,6 +7,7 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
+// 入力されたIDからユーザー情報を探し出し、SpringSecurityに渡す。
 @Service
 public class UserDetailsServiceImpl implements UserDetailsService {
     private final UserMapper userMapper;
