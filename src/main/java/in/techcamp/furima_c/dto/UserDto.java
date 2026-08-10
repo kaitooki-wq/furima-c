@@ -1,5 +1,6 @@
 package in.techcamp.furima_c.dto;
 
+import in.techcamp.furima_c.validation.ValidDate;
 import in.techcamp.furima_c.validation.ValidPassword;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
@@ -9,6 +10,7 @@ import jakarta.validation.constraints.Size;
 import lombok.Data;
 
 @Data
+@ValidDate
 public class UserDto {
 
     @NotBlank(message = "ニックネームを入力してください")

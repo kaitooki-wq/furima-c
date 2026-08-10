@@ -7,6 +7,7 @@ import lombok.Getter;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
+// SpringSecurityに情報を渡す
 @Getter
 public class CustomUserDetails implements UserDetails {
 

@@ -8,13 +8,14 @@ import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
+// 生年月日が正常かどうかを判定する
 @Documented
-@Constraint(validatedBy = PasswordValidator.class)
-@Target({ ElementType.FIELD, ElementType.PARAMETER })
-@Retention(RetentionPolicy.RUNTIME) 
-public @interface ValidPassword {
+@Constraint(validatedBy = DateValidator.class)
+@Target({ ElementType.TYPE }) 
+@Retention(RetentionPolicy.RUNTIME)
+public @interface ValidDate {
 
-  String message() default "パスワードは半角英数字混合で入力してください";
+  String message() default "不正な日付です";
 
   Class<?>[] groups() default {};
 

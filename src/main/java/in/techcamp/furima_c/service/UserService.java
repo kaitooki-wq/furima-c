@@ -11,7 +11,7 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.validation.annotation.Validated;
 
 @Service
-@Validated // クラスレベルに付与することで引数の @Valid バリデーションを有効化します
+@Validated
 public class UserService {
 
     private final UserMapper userMapper;
@@ -39,6 +39,7 @@ public class UserService {
             throw new IllegalArgumentException("指定されたメールアドレスは既に登録されています");
         }
 
+        // 保存
         UserEntity user = new UserEntity();
         user.setNickname(userDto.getNickname());
         user.setEmail(userDto.getEmail());
