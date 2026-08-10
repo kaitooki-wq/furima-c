@@ -19,6 +19,9 @@
 
     <!-- formのactionとth:objectを設定しましょう。 -->
     <form th:action="@{/items/{id}/edit(id=*{id})}" th:object="${itemForm}" method="post" enctype="multipart/form-data">
+      
+      <!-- IDを維持する -->
+      <input type="hidden" th:field="*{id}" />
 
       <!-- エラーメッセージを表示できるようにしましょう。 -->
        <div class="error-alert" th:if="${#fields.hasErrors('*')}">
