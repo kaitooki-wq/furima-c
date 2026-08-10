@@ -14,6 +14,7 @@ import org.springframework.web.filter.OncePerRequestFilter;
 @Component
 public class BasicAuthFilter extends OncePerRequestFilter {
 
+//Basic認証を管理する変数。オン＝true,オフ=false。 
   @Value("${basic.auth.enabled:false}")
   private boolean enabled;
 
