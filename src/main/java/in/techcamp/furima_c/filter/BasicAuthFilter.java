@@ -14,6 +14,9 @@ import org.springframework.web.filter.OncePerRequestFilter;
 @Component
 public class BasicAuthFilter extends OncePerRequestFilter {
 
+  @Value("${basic.auth.enabled:false}")
+  private boolean enabled;
+
   @Value("${basic.auth.username}")
   private String username;
 
@@ -23,6 +26,11 @@ public class BasicAuthFilter extends OncePerRequestFilter {
   @Override
   protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain)
       throws ServletException, IOException {
+
+    if (!enabled) {
+      filterChain.doFilter(request, response);
+      return;
+    }
 
     String header = request.getHeader("Authorization");
 
