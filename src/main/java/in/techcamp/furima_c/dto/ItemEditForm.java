@@ -16,22 +16,31 @@ public class ItemEditForm {
 
     private Long id;
 
-    @NotBlank(message = "Name does not be blank.")
+    @NotBlank(message = "Name cannot be blank.")
     private String name;
 
-    @NotBlank(message = "Description does not be blank.")
+    @NotBlank(message = "Description cannot be blank.")
     private String description;
 
     @NotNull(message = "Please select a category.")
     private Long categoryId;
 
-    @NotNull(message = "Price does not be blank.")
+    @NotNull(message = "Price cannot be blank.")
     @Min(value = 300, message = "Price must be at least 300.")
     private Integer price;
 
+    @NotNull(message = "Please select a condition.")
     private Integer condition;
+    
+    @NotNull(message = "Please select a shipping payer.")
     private Integer shippingPayer;
+
+    @NotNull(message = "Please select a prefecture.")
     private Integer prefectureId;
+
+    @NotNull(message = "Please select shipping days.")
     private Integer shippingDays;
+
+    @NotNull(message = "Please select a status.")
     private Integer status;
 }
