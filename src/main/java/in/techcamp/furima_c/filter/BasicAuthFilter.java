@@ -42,19 +42,16 @@ public class BasicAuthFilter extends OncePerRequestFilter {
         String[] values = credentials.split(":", 2);
 
         if (values.length == 2 && username.equals(values[0]) && password.equals(values[1])) {
-          // 認証成功: 次の処理（Spring Securityなど）へ進む
           filterChain.doFilter(request, response);
           return;
         }
       } catch (IllegalArgumentException e) {
-        // デコード失敗時はスルーして下の401応答へ
+
       }
     }
-
-    // ★ 修正箇所：sendError() をやめ、直接ステータスとヘッダーを書き込んで処理を終了させる
     response.setHeader("WWW-Authenticate", "Basic realm=\"Restricted Access\"");
     response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
     response.getWriter().write("Basic Authentication Required");
-    // filterChain.doFilter() を呼ばずにここでレスポンスを確定（return）させます
+   
   }
 }
