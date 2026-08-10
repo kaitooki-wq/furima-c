@@ -14,6 +14,5 @@ CREATE TABLE items (
 
     -- 外部キー制約
     CONSTRAINT fk_items_seller FOREIGN KEY (seller_id) REFERENCES users(id),
-    CONSTRAINT fk_items_buyer FOREIGN KEY (buyer_id) REFERENCES users(id),
-    CONSTRAINT fk_items_category FOREIGN KEY (category_id) REFERENCES categories(id)
+    CONSTRAINT fk_items_buyer FOREIGN KEY (buyer_id) REFERENCES users(id)
 );
