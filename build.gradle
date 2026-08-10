@@ -39,9 +39,6 @@ dependencies {
 	annotationProcessor 'org.projectlombok:lombok'
 	testImplementation 'org.springframework.boot:spring-boot-starter-test'
 	testImplementation 'org.springframework.security:spring-security-test'
-	// testImplementation 'org.springframework.boot:spring-boot-starter-flyway-test'
-	// testImplementation 'org.springframework.boot:spring-boot-starter-security-test'
-	// testImplementation 'org.springframework.boot:spring-boot-starter-thymeleaf-test'
 	testCompileOnly 'org.projectlombok:lombok'
 	testAnnotationProcessor 'org.projectlombok:lombok'
 
