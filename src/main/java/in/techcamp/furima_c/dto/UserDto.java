@@ -1,4 +1,4 @@
-package in.techcamp.furima_c.form;
+package in.techcamp.furima_c.dto;
 
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
@@ -8,7 +8,7 @@ import jakarta.validation.constraints.Size;
 import lombok.Data;
 
 @Data
-public class UserRegistrationForm {
+public class UserDto {
 
     @NotBlank(message = "ニックネームを入力してください")
     private String nickname;
