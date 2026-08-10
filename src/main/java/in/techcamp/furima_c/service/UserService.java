@@ -22,6 +22,7 @@ public class UserService {
         this.passwordEncoder = passwordEncoder;
     }
 
+    @Transactional(readOnly = true)
     public boolean existsByEmail(String email) {
         return userMapper.existsByEmail(email);
     }
