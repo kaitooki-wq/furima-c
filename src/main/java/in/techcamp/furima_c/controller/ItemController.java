@@ -30,6 +30,7 @@ public class ItemController {
             @Valid @ModelAttribute("itemForm") ItemEditForm form,
             BindingResult bindingResult) {
         if (bindingResult.hasErrors()) {
+            form.setId(itemId);
             return "items/edit";
         }
 
