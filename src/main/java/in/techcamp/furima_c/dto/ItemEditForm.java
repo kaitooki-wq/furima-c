@@ -16,31 +16,32 @@ public class ItemEditForm {
 
     private Long id;
 
-    @NotBlank(message = "Name cannot be blank.")
+    @NotBlank(message = "商品名を入力してください")
     private String name;
 
-    @NotBlank(message = "Description cannot be blank.")
+    @NotBlank(message = "商品の説明を入力してください")
     private String description;
 
-    @NotNull(message = "Please select a category.")
+    @NotNull(message = "カテゴリーを選択してください")
     private Long categoryId;
 
-    @NotNull(message = "Price cannot be blank.")
-    @Min(value = 300, message = "Price must be at least 300.")
+    @NotNull(message = "価格を入力してください")
+    @Min(value = 300, message = "価格は300円以上で入力してください")
     private Integer price;
 
-    @NotNull(message = "Please select a condition.")
+    @NotNull(message = "商品の状態を選択してください")
     private Integer condition;
     
-    @NotNull(message = "Please select a shipping payer.")
+    @NotNull(message = "配送の負担を選択してください")
     private Integer shippingPayer;
 
-    @NotNull(message = "Please select a prefecture.")
+    @NotNull(message = "配送元の地域を選択してください")
     private Integer prefectureId;
 
-    @NotNull(message = "Please select shipping days.")
+    @NotNull(message = "配送までの日数を選択してください")
     private Integer shippingDays;
 
-    @NotNull(message = "Please select a status.")
-    private Integer status;
+    @NotNull(message = "ステータスは必須です。")
+    @Builder.Default
+    private Integer status=0;
 }
