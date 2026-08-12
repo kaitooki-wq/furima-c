@@ -96,8 +96,8 @@
       <ul class="item-lists">
 
         <!-- 商品のインスタンス変数になにか入っている場合、中身のすべてを展開できるようにしましょう -->
-        <li class="list">
-          <a href="#">
+        <li class="list" th:each="item : ${items}">
+          <a th:href="@{/items/{id}(id=${item.id})}">
             <div class="item-img-content">
               <div class="messages">
                 <img src="/images/item-sample.png" class="item-img" alt="">
@@ -110,11 +110,12 @@
 
             </div>
             <div class="item-info">
-              <h3 class="item-name">
+              <h3 class="item-name" th:text="${item.name}">
                 商品名
               </h3>
               <div class="item-price">
-                <span>販売価格円<br>配送料負担</span>
+                <span th:text="${item.price}">販売価格円<br>
+                  配送料負担</span>
                 <div class="star-btn">
                   <img src="/images/star.png" class="star-icon" alt="">
                   <span class="star-count">0</span>
@@ -124,7 +125,7 @@
           </a>
         </li>
         <!-- 商品がない場合のみ、ダミー商品を表示しましょう -->
-        <li class="list">
+        <li class="list" th:if="${items.isEmpty()}">
           <a href="#">
             <img src="/images/item-sample.png" class="item-img" alt="">
             <div class="item-info">
