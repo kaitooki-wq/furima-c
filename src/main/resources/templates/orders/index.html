@@ -43,14 +43,15 @@
       <!-- /支払額の表示 -->
 
       <!-- formのactionとth:objectを設定しましょう。 -->
-      <form id="charge-form" action="@{/order}" th:object="${hoge}" method="post" class="transaction-form-wrap">
+      <form id="charge-form" action="@{/order/{id}(id=${id})}" th:object="${orderform}" method="post" class="transaction-form-wrap">
         <!-- エラーメッセージを表示できるようにしましょう。 -->
-        <!-- <div class="form-wrap">
-        <label for="price">金額</label>
-        <input type="number" th:field="*{price}" class="price" placeholder="例)2000">
-      </div>
-      <input type="submit" value="購入" class="button" id="button">  -->
-
+        
+        <div th:if="${#fields.hasAnyErrors()}" class="error-alert">
+          <ul>
+            <li th:each="err : ${#fields.allErrors()}" th:text="${err}" class="error-message"></li>
+          </ul>
+        </div>
+       
 
         <!-- カード情報の入力 -->
         <div class="credit-card-form">
@@ -95,7 +96,7 @@
               <label class="form-text">郵便番号</label>
               <span class="indispensable">必須</span>
             </div>
-            <input th:field="*{hoge}" type="text" class="input-default" id="postal-code" placeholder="例）123-4567"
+            <input th:field="*{postalCode}" type="text" class="input-default" id="postal-code" placeholder="例）123-4567"
               maxlength="8">
           </div>
           <div class="form-group">
@@ -103,8 +104,10 @@
               <label class="form-text">都道府県</label>
               <span class="indispensable">必須</span>
             </div>
-            <select th:field="*{hoge}" class="select-box">
-              <option th:each="hoge : ${hoge}" th:value="${hoge}" th:text="${hoge}"></option>
+            <select th:field="*{prefecture}" class="select-box">
+              <option value="">---</option>
+              <option th:each="prefecture : ${prefectures}" th:value="${prefecture.code}" th:text="${prefecture.label}">
+              </option>
             </select>
           </div>
           <div class="form-group">
@@ -112,28 +115,28 @@
               <label class="form-text">市区町村</label>
               <span class="indispensable">必須</span>
             </div>
-            <input th:field="*{hoge}" type="text" class="input-default" id="city" placeholder="例）横浜市緑区">
+            <input th:field="*{city}" type="text" class="input-default" id="city" placeholder="例）横浜市緑区">
           </div>
           <div class="form-group">
             <div class="form-text-wrap">
               <label class="form-text">番地</label>
               <span class="indispensable">必須</span>
             </div>
-            <input th:field="*{hoge}" type="text" class="input-default" id="addresses" placeholder="例）青山1-1-1">
+            <input th:field="*{block}" type="text" class="input-default" id="addresses" placeholder="例）青山1-1-1">
           </div>
           <div class="form-group">
             <div class="form-text-wrap">
               <label class="form-text">建物名</label>
               <span class="form-any">任意</span>
             </div>
-            <input th:field="*{hoge}" type="text" class="input-default" id="building" placeholder="例）柳ビル103">
+            <input th:field="*{building}" type="text" class="input-default" id="building" placeholder="例）柳ビル103">
           </div>
           <div class="form-group">
             <div class="form-text-wrap">
               <label class="form-text">電話番号</label>
               <span class="indispensable">必須</span>
             </div>
-            <input th:field="*{hoge}" type="text" class="input-default" id="phone-number" placeholder="例）09012345678"
+            <input th:field="*{phone}" type="text" class="input-default" id="phone-number" placeholder="例）09012345678"
               maxlength="11">
           </div>
         </div>
