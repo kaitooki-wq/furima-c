@@ -7,5 +7,5 @@ CREATE TABLE address (
     block VARCHAR(255) NOT NULL,
     building VARCHAR(255),
     phone VARCHAR(15) NOT NULL,
-    FOREIGN KEY (buy_id) REFERENCES buys(id) ON DELETE CASCADE
+    FOREIGN KEY (buy_id) REFERENCES buy(id) ON DELETE CASCADE
 )
