@@ -58,8 +58,6 @@ public class BuyService {
 
     /**
      * 購入したかどうか
-     * 
-     * @param userId
      * @param productId
      * @return boolean
      */
