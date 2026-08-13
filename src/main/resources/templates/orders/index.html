@@ -9,7 +9,7 @@
   <link rel="stylesheet" href="/css/shared/footer.css">
   <link rel="stylesheet" href="/css/shared/errors.css">
   <link rel="stylesheet" href="/css/shared/form.css">
-  <link rel="stylesheet" href="/css/transactions/index.css">
+  <link rel="stylesheet" href="/css/orders/index.css">
   <script type="text/javascript" src="https://js.pay.jp/v2/pay.js"></script>
 </head>
 
@@ -23,7 +23,7 @@
 
       <!-- 購入内容の表示 -->
       <div class="buy-item-info">
-        <img th:src="${item.img}" class="buy-item-img" alt="">
+        <img th:src="${item.image}" class="buy-item-img" alt="">
         <div class="buy-item-right-content">
           <h2 class="buy-item-text" th:text="${item.name}"></h2>
           <div class="buy-item-price">
@@ -42,15 +42,16 @@
       <!-- /支払額の表示 -->
 
       <!-- formのactionとth:objectを設定しましょう。 -->
-      <form id="charge-form" th:action="@{/order/{id}(id=${item.id})}" th:object="${orderForm}" method="post" class="transaction-form-wrap">
+      <form id="charge-form" th:action="@{/order/{id}(id=${item.id})}" th:object="${orderForm}" method="post"
+        class="transaction-form-wrap">
         <!-- エラーメッセージを表示できるようにしましょう。 -->
-        
+
         <div th:if="${#fields.hasAnyErrors()}" class="error-alert">
           <ul>
             <li th:each="err : ${#fields.allErrors()}" th:text="${err}" class="error-message"></li>
           </ul>
         </div>
-       
+
         <!-- カード情報の入力 -->
         <div class="credit-card-form">
           <h1 class="info-input-haedline">クレジットカード情報入力</h1>

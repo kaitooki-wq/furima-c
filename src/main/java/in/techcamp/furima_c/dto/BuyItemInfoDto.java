@@ -7,7 +7,7 @@ public class BuyItemInfoDto {
 
     // 商品名、画像、値段、配送料負担
     private Long id;
-    private String img;
+    private String image;
     private String name;
     private Integer price;
     private Short shippingPayer;
