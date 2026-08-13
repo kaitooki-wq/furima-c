@@ -44,7 +44,7 @@
       </form>
 
       <!-- 商品が売れていない場合はこちらを表示しましょう -->
-      <a th:href="@{/order}" class="item-red-btn">購入画面に進む</a>
+      <a th:href="@{/order/{id}(id=${item.id})}" class="item-red-btn">購入画面に進む</a>
 
       <div class="item-explain-box">
         <span>商品説明</span>
