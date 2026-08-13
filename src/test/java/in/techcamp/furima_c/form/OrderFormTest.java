@@ -76,7 +76,7 @@ class OrderFormTest {
     @Test
     @DisplayName("異常系：電話番号にハイフンが含まれているとエラーになること")
     void testInvalidPhoneWithHyphen() {
-        orderForm.setPhone("090-1234-5678");
+        orderForm.setPhone("090-123-568");
         Set<ConstraintViolation<OrderForm>> violations = validator.validate(orderForm);
         
         assertEquals(1, violations.size());

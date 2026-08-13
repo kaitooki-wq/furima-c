@@ -8,4 +8,4 @@ CREATE TABLE address (
     building VARCHAR(255),
     phone VARCHAR(15) NOT NULL,
     FOREIGN KEY (buy_id) REFERENCES buy(id) ON DELETE CASCADE
-)
+);
