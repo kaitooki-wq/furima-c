@@ -28,7 +28,7 @@ public interface OrderMapper {
     void buyUserInfoInsert(AddressEntity address);
 
     // 購入したかどうかを調べる
-    @Select("SELECT EXISTS ( SELECT 1 FROM buy WHERE user_id = #{userId} AND item_id = #{itemId}")
+    @Select("SELECT EXISTS ( SELECT 1 FROM buy WHERE user_id = #{userId} AND item_id = #{itemId} )")
     boolean isCheckOrder(Long userId,Long itemId);
     
     // 購入したものがあればそのデータのidを返す
