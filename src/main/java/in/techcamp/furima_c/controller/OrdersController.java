@@ -41,12 +41,12 @@ public class OrdersController {
             return "redirect:/users/sign_in";
 
         // 出品した本人かどうか(出品した人だったらリダイレクトで返す)
-        if (buyService.buyCheck(userDetails.getUserEntity().getId(), id))
-            return "redirect:/order/" + id;
+        if (buyService.isSeller(userDetails.getUserEntity().getId(), id))
+            return "redirect:/";
 
         // 売却済みかどうか
-        if (buyService.isCheckSeller(userDetails.getUserEntity().getId(), id))
-            return "redirect:/order/" + id;
+        if (buyService.isSoldOut(id))
+            return "redirect:/";
 
         model.addAttribute("item", buyService.itemInfo(id));
         model.addAttribute("payjpPublicKey", payjpPublicKey);
@@ -81,12 +81,12 @@ public class OrdersController {
         Long itemId = id;
 
         // 出品した本人かどうか(出品した人だったらリダイレクトで返す)
-        if (buyService.buyCheck(userId, itemId))
-            return "redirect:/order/" + itemId;
+        if (buyService.isSeller(userId, itemId))
+            return "redirect:/";
 
         // 売却済みかどうか
-        if (buyService.isCheckSeller(userId, itemId))
-            return "redirect:/order/" + itemId;
+        if (buyService.isSoldOut(itemId))
+            return "redirect:/";
 
         try {
             // payservice

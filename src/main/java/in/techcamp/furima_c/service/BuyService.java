@@ -52,7 +52,7 @@ public class BuyService {
     }
 
     // 購入する商品の情報
-    public BuyItemInfoDto itemInfo(Long itmeId){
+    public BuyItemInfoDto itemInfo(Long itmeId) {
         return orderMapper.selectByItemId(itmeId);
     }
 
@@ -64,9 +64,9 @@ public class BuyService {
      * @return boolean
      */
     @Transactional
-    public boolean buyCheck(Long userId, Long productId) {
+    public boolean isSoldOut(Long productId) {
         // 存在したらtrue
-        return orderMapper.isCheckOrder(userId, productId);
+        return orderMapper.isSoldOut(productId);
 
     }
 
@@ -78,11 +78,9 @@ public class BuyService {
      * @return boolean
      */
     @Transactional
-    public boolean isCheckSeller(Long userId, Long productId) {
+    public boolean isSeller(Long userId, Long productId) {
         // 購入した人だったらtrue
-        if (userId.equals(orderMapper.selectByUserId(productId)))
-            return true;
-        return false;
+        return userId.equals(orderMapper.selectByUserId(productId));
     }
 
 }
