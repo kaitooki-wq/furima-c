@@ -1,5 +1,6 @@
 package in.techcamp.furima_c.controller;
 
+import org.postgresql.shaded.com.ongres.scram.common.bouncycastle.pbkdf2.RuntimeCryptoException;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
@@ -10,9 +11,10 @@ import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 
+import in.techcamp.furima_c.enums.PrefectureType;
 import in.techcamp.furima_c.form.OrderForm;
-import in.techcamp.furima_c.mapper.OrderMapper;
 import in.techcamp.furima_c.security.CustomUserDetails;
+import in.techcamp.furima_c.service.BuyService;
 import in.techcamp.furima_c.service.PayjpService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -21,38 +23,81 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 public class OrdersController {
 
-    private final OrderMapper orderMapper;
     private final PayjpService payjpService;
+    private final BuyService buyService;
 
     @Value("${payjp.public-key}")
     private String payjpPublicKey;
 
+    // 商品購入ページ
     @GetMapping("/order/{id}")
-    public String index(@PathVariable Long id,
-         @AuthenticationPrincipal CustomUserDetails userDetails,
-          Model model) {
+    public String showOrder(@PathVariable Long id,
+            @AuthenticationPrincipal CustomUserDetails userDetails,
+            @ModelAttribute OrderForm orderForm,
+            Model model) {
 
         // ログインしているユーザーかどうか (ログインしてなかったらリダイレクトで返す)
-        if(userDetails == null) return "redirect:/users/sign_in";
+        if (userDetails == null)
+            return "redirect:/users/sign_in";
 
         // 出品した本人かどうか(出品した人だったらリダイレクトで返す)
-        
+        if (buyService.buyCheck(userDetails.getUserEntity().getId(), id))
+            return "redirect:/order/" + id;
 
         // 売却済みかどうか
+        if (buyService.isCheckSeller(userDetails.getUserEntity().getId(), id))
+            return "redirect:/order/" + id;
 
+        model.addAttribute("item", buyService.itemInfo(id));
         model.addAttribute("payjpPublicKey", payjpPublicKey);
-        model.addAttribute("orderForm", new OrderForm());
+        // model.addAttribute("orderForm", new OrderForm());
+        model.addAttribute("prefectures", PrefectureType.values());
+
         return "orders/index";
     }
 
-    @PostMapping("/orders")
-    public String create(@Valid @ModelAttribute OrderForm orderForm,
+    // 購入処理コントローラー
+    @PostMapping("/order/{id}")
+    public String itemOrder(
+            @Valid @ModelAttribute OrderForm orderForm,
             BindingResult bindingResult,
+            @AuthenticationPrincipal CustomUserDetails userDetails,
+            @PathVariable Long id,
             Model model) {
+
+        // バリデーションチェック
         if (bindingResult.hasErrors()) {
+            model.addAttribute("item", buyService.itemInfo(id));
+            model.addAttribute("payjpPublicKey", payjpPublicKey);
+            model.addAttribute("prefectures", PrefectureType.values());
             return "orders/index";
         }
-        payjpService.charge(orderForm.getPrice(), orderForm.getToken());
+
+        // ログインしているかどうか
+        if (userDetails == null)
+            return "redirect:/users/sign_in";
+
+        Long userId = userDetails.getUserEntity().getId();
+        Long itemId = id;
+
+        // 出品した本人かどうか(出品した人だったらリダイレクトで返す)
+        if (buyService.buyCheck(userId, itemId))
+            return "redirect:/order/" + itemId;
+
+        // 売却済みかどうか
+        if (buyService.isCheckSeller(userId, itemId))
+            return "redirect:/order/" + itemId;
+
+        try {
+            // payservice
+            payjpService.charge(buyService.itemInfo(itemId).getPrice(), orderForm.getToken());
+            // 購入処理を保存
+            buyService.insertUserInfo(orderForm, userId, itemId);
+
+        } catch (RuntimeException e) {
+            System.out.println("処理失敗 :" + e);
+            throw new RuntimeCryptoException("処理に失敗しました");
+        }
 
         return "redirect:/";
     }

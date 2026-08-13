@@ -24,12 +24,12 @@
 
       <!-- 購入内容の表示 -->
       <div class="buy-item-info">
-        <img src="/images/item-sample.png" class="buy-item-img" alt="">
+        <img th:src="${item.img}" class="buy-item-img" alt="">
         <div class="buy-item-right-content">
-          <h2 class="buy-item-text">商品名</h2>
+          <h2 class="buy-item-text" th:text="${item.name}"></h2>
           <div class="buy-item-price">
-            <p class="item-price-text">¥999,999,999</p>
-            <p class="item-price-sub-text">配送料負担</p>
+            <p class="item-price-text" th:text="|¥${#numbers.formatInteger(item.price, 1, 'COMMA')}|"></p>
+            <p class="item-price-sub-text" th:text="${item.shippingPayer == 1 ? '送料込み(出品者負担)' : '着払い(購入者負担)'}"></p>
           </div>
         </div>
       </div>
@@ -38,12 +38,12 @@
       <!-- 支払額の表示 -->
       <div class="item-payment">
         <h1 class="item-payment-title">支払金額</h1>
-        <p class="item-payment-price">¥販売価格</p>
+        <p class="item-payment-price" th:text="|¥${#numbers.formatInteger(item.price, 1, 'COMMA')}|"></p>
       </div>
       <!-- /支払額の表示 -->
 
       <!-- formのactionとth:objectを設定しましょう。 -->
-      <form id="charge-form" action="@{/order/{id}(id=${id})}" th:object="${orderform}" method="post" class="transaction-form-wrap">
+      <form id="charge-form" th:action="@{/order/{id}(id=${item.id})}" th:object="${orderForm}" method="post" class="transaction-form-wrap">
         <!-- エラーメッセージを表示できるようにしましょう。 -->
         
         <div th:if="${#fields.hasAnyErrors()}" class="error-alert">
@@ -52,7 +52,6 @@
           </ul>
         </div>
        
-
         <!-- カード情報の入力 -->
         <div class="credit-card-form">
           <h1 class="info-input-haedline">クレジットカード情報入力</h1>

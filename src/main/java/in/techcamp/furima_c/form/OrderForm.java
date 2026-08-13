@@ -9,9 +9,6 @@ import lombok.Data;
 @Data
 public class OrderForm {
 
-    @NotNull(message = "金額を入力してください")
-    private Integer price;
-
     @NotBlank(message = "カード情報を正しく入力してください")
     private String token;
 
@@ -21,7 +18,7 @@ public class OrderForm {
     private String postalCode;
 
     // 都道府県
-    @NotBlank
+    @NotNull(message = "都道府県を選択してください")
     private Integer prefecture;
 
     // 市区町村
