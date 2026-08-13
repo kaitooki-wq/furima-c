@@ -12,7 +12,7 @@ import in.techcamp.furima_c.entity.ItemEntity;
 
 @Mapper
 public interface ItemMapper {
-    @Select("SELECT id, name, price, shippingPayer FROM items ORDER BY id DESC")
+    @Select("SELECT id, name, image, price, shipping_payer FROM items ORDER BY id DESC")
     List<ItemListDto> findAll();
 
     // 商品削除
