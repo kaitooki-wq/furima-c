@@ -1,6 +1,5 @@
 package in.techcamp.furima_c.controller;
 
-import org.postgresql.shaded.com.ongres.scram.common.bouncycastle.pbkdf2.RuntimeCryptoException;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
@@ -96,7 +95,7 @@ public class OrdersController {
 
         } catch (RuntimeException e) {
             System.out.println("処理失敗 :" + e);
-            throw new RuntimeCryptoException("処理に失敗しました");
+            throw new RuntimeException("処理に失敗しました");
         }
 
         return "redirect:/";
