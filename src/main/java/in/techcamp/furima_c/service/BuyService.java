@@ -41,7 +41,7 @@ public class BuyService {
 
         address.setBuyId(buyId);
         address.setPostNumber(orderForm.getPostalCode());
-        address.setPrefecure(orderForm.getPrefecture());
+        address.setPrefecture(orderForm.getPrefecture());
         address.setCity(orderForm.getCity());
         address.setBlock(orderForm.getBlock());
         address.setBuilding(orderForm.getBuilding());
