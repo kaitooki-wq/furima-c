@@ -34,7 +34,7 @@ public class BuyService {
         orderMapper.buyInsert(buy);
 
         // 購入したもののidを返す
-        long buyId = orderMapper.searchBuyId(userId, productId);
+        long buyId = buy.getId();
 
         // orderFormから取得したものをaddressEntityに入れる
         AddressEntity address = new AddressEntity();
