@@ -12,7 +12,9 @@ import in.techcamp.furima_c.dto.ItemListDto;
 import in.techcamp.furima_c.security.CustomUserDetails;
 import in.techcamp.furima_c.service.ItemService;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 
+@Slf4j
 @Controller
 @RequiredArgsConstructor
 public class ItemController {
@@ -30,7 +32,7 @@ public String getAllItems(Model model){
 
 }
 
-@PostMapping("items/{id}/delete")
+@PostMapping("/items/{id}/delete")
  public String deleteItem(
     @PathVariable("id")Long itemId,
     @AuthenticationPrincipal CustomUserDetails userDetails
@@ -42,7 +44,8 @@ public String getAllItems(Model model){
 
         itemService.deleteItem(itemId, currentUserId);
     }catch (Exception e){
-        System.out.println("エラー:" +e);
+
+        log.error("商品の削除中にエラーが発生しました。商品ID: {}", itemId, e);
         return "redirect:/";
     }
     return "redirect:/";

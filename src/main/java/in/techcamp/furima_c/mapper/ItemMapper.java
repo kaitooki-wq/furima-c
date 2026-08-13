@@ -17,7 +17,7 @@ public interface ItemMapper {
 
     // 商品削除
     @Delete("DELETE FROM items WHERE id = #{itemId}")
-    int deleteByItemId(@Param("itemId") Long itemid);
+    int deleteByItemId(@Param("itemId") Long itemId);
 
     @Select("SELECT * FROM items WHERE id = #{itemId}")
     ItemEntity findById(@Param("itemId") Long itemId);
