@@ -9,6 +9,6 @@ import in.techcamp.furima_c.dto.ItemListDto;
 
 @Mapper
 public interface ItemMapper {
-    @Select("SELECT id, name, price, shippingPayer FROM items ORDER BY id DESC")
+    @Select("SELECT id, name, price, shipping_payer FROM items ORDER BY id DESC")
     List<ItemListDto> findAll();
 }
