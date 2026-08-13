@@ -3,7 +3,6 @@ CREATE TABLE items (
     seller_id BIGINT NOT NULL,
     buyer_id BIGINT,
     name VARCHAR(255) NOT NULL,
-    image VARCHAR(255) NOT NULL,
     description TEXT NOT NULL,
     category_id BIGINT NOT NULL,
     condition SMALLINT NOT NULL,
