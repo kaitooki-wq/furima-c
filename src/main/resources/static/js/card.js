@@ -1,6 +1,4 @@
 const pay = () => {
-  // HTMLのmetaタグからPAY.JPの公開鍵を取得する
-// const publicKey = document.querySelector('meta[name="payjp-public-key"]').getAttribute("content");
   const payjp = Payjp(PAYJP_PUBLIC_KEY);
   const elements = payjp.elements();
   const numberElement = elements.create('cardNumber');

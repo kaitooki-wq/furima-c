@@ -49,7 +49,6 @@ public class OrdersController {
 
         model.addAttribute("item", buyService.itemInfo(id));
         model.addAttribute("payjpPublicKey", payjpPublicKey);
-        // model.addAttribute("orderForm", new OrderForm());
         model.addAttribute("prefectures", PrefectureType.values());
 
         return "orders/index";
