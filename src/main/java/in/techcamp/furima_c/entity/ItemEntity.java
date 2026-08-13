@@ -8,6 +8,7 @@ public class ItemEntity {
     private Long sellerId;
     private Long buyerId;
     private String name;
+    private String image;
     private String description;
     private Long categoryId;
     private Integer condition;
