@@ -5,6 +5,8 @@ import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
 import org.apache.ibatis.annotations.Select;
 
+import in.techcamp.furima_c.entity.ItemEntity;
+
 @Mapper
 public interface ItemMapper {
 // 商品削除
@@ -12,7 +14,7 @@ public interface ItemMapper {
     int deleteByItemId(@Param("itemId") Long itemid);
 
     @Select("SELECT * FROM items WHERE id = #{itemId}")
-    Item findById(@Param("itemId") Long itemId);
+    ItemEntity findById(@Param("itemId") Long itemId);
 
     
   
