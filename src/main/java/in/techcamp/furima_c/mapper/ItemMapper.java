@@ -25,7 +25,7 @@ public interface ItemMapper {
     ItemEntity findById(@Param("itemId") Long itemId);
 
     // 商品出品
-    @Insert("INSERT INTO items (seller_id, buyer_id, name, image, description, category_id, condition, shipping_payer, prefecture_id, shipping_days, price,status ) VALUES (#{sellerId},#{buyerId},#{name}, #{image},#{description},#{categoryId},#{condition},#{shippingPayer},#{prefectureId},#{shippingDays},#{price},#{status})")
+    @Insert("INSERT INTO items (name, image, description, category_id, condition, shipping_payer, prefecture_id, shipping_days, price) VALUES (#{name}, #{image},#{description},#{categoryId},#{condition},#{shippingPayer},#{prefectureId},#{shippingDays},#{price})")
     @Options(useGeneratedKeys = true, keyProperty = "id")
     void insert(ItemEntity item);
 }

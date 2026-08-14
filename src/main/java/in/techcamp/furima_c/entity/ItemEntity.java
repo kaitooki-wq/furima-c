@@ -18,5 +18,5 @@ public class ItemEntity {
     private Integer prefectureId;
     private Integer shippingDays;
     private Integer price;
-    private Integer status;
+
 }
