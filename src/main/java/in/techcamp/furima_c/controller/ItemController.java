@@ -8,6 +8,8 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
+
+import in.techcamp.furima_c.dto.ItemDetailDto;
 import in.techcamp.furima_c.dto.ItemListDto;
 import in.techcamp.furima_c.security.CustomUserDetails;
 import in.techcamp.furima_c.service.ItemService;
@@ -30,6 +32,23 @@ public String getAllItems(Model model){
 
     return "items/index";
 
+}
+
+@GetMapping("/items/{id}")
+public String showItem(
+    @PathVariable("id")Long itemId,
+    Model model,
+    @AuthenticationPrincipal CustomUserDetails userDetails) {
+
+        ItemDetailDto itemDetail = itemService.showItemDetail(itemId);
+
+        model.addAttribute("item", itemDetail);
+        
+        if(userDetails != null){
+            model.addAttribute("currentUserId", userDetails.getUserEntity().getId());
+        }
+    
+    return "items/show";
 }
 
 @PostMapping("/items/{id}/delete")

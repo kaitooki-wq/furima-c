@@ -4,6 +4,7 @@ import java.util.List;
 
 import org.springframework.stereotype.Service;
 
+import in.techcamp.furima_c.dto.ItemDetailDto;
 import in.techcamp.furima_c.dto.ItemListDto;
 import in.techcamp.furima_c.entity.ItemEntity;
 import in.techcamp.furima_c.mapper.ItemMapper;
@@ -32,5 +33,11 @@ public class ItemService {
         }
 
         itemMapper.deleteByItemId(id);
+    }
+
+    public ItemDetailDto showItemDetail(Long id){
+
+        ItemDetailDto itemDetail = itemMapper.findByitemId(id);
+        return itemDetail;
     }
 }
