@@ -9,6 +9,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 
+import in.techcamp.furima_c.dto.ItemConvertDetailDto;
 import in.techcamp.furima_c.dto.ItemConvertListDto;
 import in.techcamp.furima_c.dto.ItemDetailDto;
 import in.techcamp.furima_c.dto.ItemListDto;
@@ -44,7 +45,7 @@ public String showItem(
     @AuthenticationPrincipal CustomUserDetails userDetails) {
 
         // service層で処理
-        ItemDetailDto itemDetail = itemService.showItemDetail(itemId);
+        ItemConvertDetailDto itemDetail = itemService.showItemDetail(itemId);
 
        model.addAttribute("item", itemDetail);
         

@@ -5,11 +5,15 @@ import java.util.stream.Collectors;
 
 import org.springframework.stereotype.Service;
 
+import in.techcamp.furima_c.dto.ItemConvertDetailDto;
 import in.techcamp.furima_c.dto.ItemConvertListDto;
 import in.techcamp.furima_c.dto.ItemDetailDto;
 import in.techcamp.furima_c.dto.ItemListDto;
 import in.techcamp.furima_c.entity.ItemEntity;
+import in.techcamp.furima_c.enums.Category;
+import in.techcamp.furima_c.enums.Condition;
 import in.techcamp.furima_c.enums.DeliveryFeeType;
+import in.techcamp.furima_c.enums.PrefectureType;
 import in.techcamp.furima_c.mapper.ItemMapper;
 import in.techcamp.furima_c.mapper.OrderMapper;
 import lombok.RequiredArgsConstructor;
@@ -53,9 +57,26 @@ public class ItemService {
         itemMapper.deleteByItemId(id);
     }
 
-    public ItemDetailDto showItemDetail(Long id) {
+    // 商品詳細
+    public ItemConvertDetailDto showItemDetail(Long id) {
 
-        ItemDetailDto itemDetail = itemMapper.findByitemId(id);
-        return itemDetail;
+        ItemDetailDto item = itemMapper.findByitemId(id);
+
+        ItemConvertDetailDto dto = new ItemConvertDetailDto();
+
+        dto.setId(item.getId());
+        dto.setUserId(item.getUserId());
+        dto.setName(item.getName());
+        dto.setImage(item.getImage());
+        dto.setPrice(item.getPrice());
+        dto.setDescription(item.getDescription());
+        dto.setNickname(item.getNickname());
+        dto.setSoldout(orderMapper.isSoldOut(item.getId()));
+        dto.setShippingPayer(DeliveryFeeType.fromCode(item.getShippingPayer()).getLabel());
+        dto.setCategoryId(Category.fromCode(item.getCategoryId()).getDisplayName());
+        dto.setCondition(Condition.fromCode(item.getCondition()).getDisplayName());
+        dto.setPrefectureId(PrefectureType.fromCode(item.getPrefectureId()).getLabel());
+        
+        return dto;
     }
 }

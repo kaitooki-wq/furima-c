@@ -31,7 +31,7 @@ public interface ItemMapper {
             i.shipping_days, i.price,
             u.nickname
             FROM items i
-            FROM users u
+            JOIN users u ON i.user_id = u.id
             WHERE i.id = #{id}
             """)
     ItemDetailDto findByitemId(Long id);
