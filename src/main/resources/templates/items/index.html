@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org" lang="ja">
+
 <head>
   <meta charset="UTF-8">
   <title>Furima</title>
@@ -8,6 +9,7 @@
   <link rel="stylesheet" href="/css/shared/footer.css">
   <link rel="stylesheet" href="/css/items/index.css">
 </head>
+
 <body>
   <div th:replace="~{shared/header :: top-header}"></div>
 
@@ -104,7 +106,7 @@
               </div>
 
               <!-- 商品が売れていればsold outを表示しましょう -->
-              <div class="sold-out">
+              <div th:if="${item.soldout}" class="sold-out">
                 <span>Sold Out!!</span>
               </div>
 
@@ -114,8 +116,9 @@
                 商品名
               </h3>
               <div class="item-price">
-                <span th:text="${item.price} + '円'">販売価格円<br>
-                  <span th:text="${item.shippingPayer.label}"></span>配送料負担</span>
+                <span>[[${item.price}]] 円<br><span>
+
+                    [[${item.shippingPayer}]]</span>
                 </span>
                 <div class="star-btn">
                   <img src="/images/star.png" class="star-icon" alt="">
@@ -154,4 +157,5 @@
 
   <div th:replace="~{shared/footer :: main-footer}"></div>
 </body>
+
 </html>
