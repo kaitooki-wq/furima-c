@@ -150,7 +150,7 @@
 
   <div th:replace="~{shared/footer :: main-footer}"></div>
   <script th:inline="javascript">
-    const PAYJP_PUBLIC_KEY = [[${ payjpPublicKey }]];
+    const PAYJP_PUBLIC_KEY = [[{ payjpPublicKey }]];
   </script>
   <script th:src="@{/js/card.js}"></script>
 </body>
