@@ -14,6 +14,7 @@ import in.techcamp.furima_c.enums.Category;
 import in.techcamp.furima_c.enums.Condition;
 import in.techcamp.furima_c.enums.DeliveryFeeType;
 import in.techcamp.furima_c.enums.PrefectureType;
+import in.techcamp.furima_c.enums.UntilDelivery;
 import in.techcamp.furima_c.mapper.ItemMapper;
 import in.techcamp.furima_c.mapper.OrderMapper;
 import lombok.RequiredArgsConstructor;
@@ -76,7 +77,8 @@ public class ItemService {
         dto.setCategoryId(Category.fromCode(item.getCategoryId()).getDisplayName());
         dto.setCondition(Condition.fromCode(item.getCondition()).getDisplayName());
         dto.setPrefectureId(PrefectureType.fromCode(item.getPrefectureId()).getLabel());
-        
+        dto.setShippingDays(UntilDelivery.fromCode(item.getShippingDays()).getDisplayName());
+
         return dto;
     }
 }
