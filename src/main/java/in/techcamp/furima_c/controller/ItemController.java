@@ -14,11 +14,16 @@ import org.springframework.security.core.annotation.AuthenticationPrincipal;
 
 import in.techcamp.furima_c.dto.ItemCreateDto;
 import in.techcamp.furima_c.dto.ItemListDto;
+import in.techcamp.furima_c.enums.Category;
+import in.techcamp.furima_c.enums.Condition;
+import in.techcamp.furima_c.enums.DeliveryFeeType;
+import in.techcamp.furima_c.enums.PrefectureType;
+import in.techcamp.furima_c.enums.UntilDelivery;
 import in.techcamp.furima_c.security.CustomUserDetails;
 import in.techcamp.furima_c.service.ItemService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.web.bind.annotation.RequestBody;
+
 
 
 @Slf4j
@@ -27,7 +32,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 public class ItemController {
 
     private final ItemService itemService;
-    private final ItemCreateDto itemCreateDto;
+    // private final ItemCreateDto itemCreateDto;
 // 商品一覧表示
 @GetMapping("/")
 public String getAllItems(Model model){
@@ -58,11 +63,27 @@ public String getAllItems(Model model){
     }
     return "redirect:/";
 
+
 }
+
+
+@GetMapping("/items/new")
+public String newItemForm(Model model) {
+    model.addAttribute("itemCreateDto", new ItemCreateDto());
+    model.addAttribute("categories", Category.values());
+    model.addAttribute("conditions", Condition.values());
+    model.addAttribute("deliveryfees", DeliveryFeeType.values());
+    model.addAttribute("prefectures", PrefectureType.values());
+    model.addAttribute("untildelivery", UntilDelivery.values());
+    return "items/new";
+}
+
+
 // 商品出品
 @PostMapping("/items/new")
 public String addItem(@Validated @ModelAttribute("itemCreateDto")ItemCreateDto itemCreateDto,BindingResult bindingResult,
-                      @AuthenticationPrincipal CustomUserDetails userDetails
+                      @AuthenticationPrincipal CustomUserDetails userDetails,
+                      Model model
                     ) {
     
     if(bindingResult.hasErrors()){
