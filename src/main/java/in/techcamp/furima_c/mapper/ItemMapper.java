@@ -26,12 +26,12 @@ public interface ItemMapper {
 
     @Select("""
             SELECT
-            i.id, i.seller_id, i.buyer_id, i.name, i.image, i.description,
+            i.id, i.name, i.image, i.description,
             i.category_id, i.condition, i.shipping_payer, i.prefecture_id,
-            i.shipping_days, i.price, i.status,
+            i.shipping_days, i.price,
             u.nickname
             FROM items i
-            JOIN users u ON i.seller_id = u.id
+            FROM users u
             WHERE i.id = #{id}
             """)
     ItemDetailDto findByitemId(Long id);
