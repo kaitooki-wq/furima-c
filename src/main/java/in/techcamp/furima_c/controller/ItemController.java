@@ -87,6 +87,13 @@ public String addItem(@Validated @ModelAttribute("itemCreateDto")ItemCreateDto i
                     ) {
     
     if(bindingResult.hasErrors()){
+        model.addAttribute("categories", Category.values());
+        model.addAttribute("conditions", Condition.values());
+        model.addAttribute("deliveryfees", DeliveryFeeType.values());
+        model.addAttribute("prefectures", PrefectureType.values());
+        model.addAttribute("untildelivery", UntilDelivery.values());
+
+
         return "items/new";
     }
     try{
@@ -96,6 +103,14 @@ public String addItem(@Validated @ModelAttribute("itemCreateDto")ItemCreateDto i
         itemService.createItem(itemCreateDto,currentUserId);
         
     }catch(Exception e){
+
+        log.error("出品処理中にエラーが発生しました", e); // エラー原因をターミナルに出すための一文
+        
+        model.addAttribute("categories", Category.values());
+        model.addAttribute("conditions", Condition.values());
+        model.addAttribute("deliveryfees", DeliveryFeeType.values());
+        model.addAttribute("prefectures", PrefectureType.values());
+        model.addAttribute("untildelivery", UntilDelivery.values());
         return "items/new";
     }
     

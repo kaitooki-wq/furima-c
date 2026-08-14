@@ -18,6 +18,11 @@
 
     <!-- ✅ actionを適切なURLにし、th:objectをDtoの名前に変更 -->
     <form th:action="@{/items/new}" th:object="${itemCreateDto}" method="post" enctype="multipart/form-data">
+      <div th:if="${#fields.hasAnyErrors()}" class="error-messages">
+        <ul>
+          <li th:each="err : ${#fields.errors('all')}" th:text="${err}"></li>
+        </ul>
+      </div>
       
       <!-- 出品画像 -->
       <div class="img-upload">

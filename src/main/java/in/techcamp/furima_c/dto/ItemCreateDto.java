@@ -10,6 +10,7 @@ import lombok.Data;
 
 @Data
 public class ItemCreateDto {
+    private Long userId;
    
     @NotBlank(message="商品名は必須です")
     private String name;
