@@ -9,6 +9,7 @@ import org.apache.ibatis.annotations.Options;
 import org.apache.ibatis.annotations.Param;
 import org.apache.ibatis.annotations.Select;
 
+import in.techcamp.furima_c.dto.ItemDetailDto;
 import in.techcamp.furima_c.dto.ItemListDto;
 import in.techcamp.furima_c.entity.ItemEntity;
 
@@ -28,4 +29,16 @@ public interface ItemMapper {
    @Insert("INSERT INTO items (user_id, name, image, description, category_id, condition, shipping_payer, prefecture_id, shipping_days, price) VALUES (#{userId}, #{name}, #{image},#{description},#{categoryId},#{condition},#{shippingPayer},#{prefectureId},#{shippingDays},#{price})")
 @Options(useGeneratedKeys = true, keyProperty = "id")
 void insert(ItemEntity item);
+
+    @Select("""
+            SELECT
+            i.id, i.name, i.image, i.description,
+            i.category_id, i.condition, i.shipping_payer, i.prefecture_id,
+            i.shipping_days, i.price,
+            u.nickname
+            FROM items i
+            JOIN users u ON i.user_id = u.id
+            WHERE i.id = #{id}
+            """)
+    ItemDetailDto findByitemId(Long id);
 }
