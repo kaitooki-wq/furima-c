@@ -1,6 +1,6 @@
 package in.techcamp.furima_c.entity;
 
-import org.springframework.web.multipart.MultipartFile;
+
 
 import lombok.Data;
 
@@ -10,7 +10,7 @@ public class ItemEntity {
     private Long sellerId;
     private Long buyerId;
     private String name;
-    private MultipartFile image;
+    private String image;
     private String description;
     private Long categoryId;
     private Integer condition;

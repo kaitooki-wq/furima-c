@@ -67,8 +67,9 @@ public class ItemService {
 
     // DB保存
     ItemEntity entity = new ItemEntity();
+
     entity.setName(itemCreateDto.getName());
-    entity.setImage(itemCreateDto.getImage());
+    entity.setImage(savedFileName);
     entity.setDescription(itemCreateDto.getDescription());
     entity.setCategoryId(itemCreateDto.getCategoryId());
     entity.setCondition(itemCreateDto.getCondition());
@@ -77,7 +78,7 @@ public class ItemService {
     entity.setShippingDays(itemCreateDto.getShippingDays());
     entity.setPrice(itemCreateDto.getPrice());
 
+    itemMapper.insert(entity);
 
-    
-}
+    }
 }
