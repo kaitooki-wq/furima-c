@@ -28,7 +28,8 @@ public class ItemService {
             throw new IllegalArgumentException("指定された商品が見つかりません");
         }
 
-        if (!existingItem.getSellerId().equals(userId)){
+        // item tableの中に入ってるuserIdと現在ログインしているuserIdを比べる
+        if (!existingItem.getUserId().equals(userId)){
             throw new SecurityException("他のユーザーの商品は削除できません");
         }
 
