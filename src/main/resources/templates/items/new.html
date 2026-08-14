@@ -11,21 +11,26 @@
 <body>
 <div class="items-sell-contents">
   <header class="items-sell-header">
-    <a href="/"><img src="/images/furima-logo-color.png" alt="FURIMA" class="second-logo"></a>
+    <a th:href="@{/}"><img src="/images/furima-logo-color.png" alt="FURIMA" class="second-logo"></a>
   </header>
   <div class="items-sell-main">
     <h2 class="items-sell-title">商品の情報を入力</h2>
 
-    <!-- formのactionとth:objectを設定しましょう。 -->
-    <form action="hoge" th:object="${hoge}" method="post" enctype="multipart/form-data">
-      <!-- エラーメッセージを表示できるようにしましょう。 -->
-
+    <!-- ✅ actionを適切なURLにし、th:objectをDtoの名前に変更 -->
+    <form th:action="@{/items/new}" th:object="${itemCreateDto}" method="post" enctype="multipart/form-data">
+      <div th:if="${#fields.hasAnyErrors()}" class="error-messages">
+        <ul>
+          <li th:each="err : ${#fields.errors('all')}" th:text="${err}"></li>
+        </ul>
+      </div>
+      
       <!-- 出品画像 -->
       <div class="img-upload">
         <div class="weight-bold-text">出品画像 <span class="indispensable">必須</span></div>
         <div class="click-upload">
           <p>クリックしてファイルをアップロード</p>
-          <input type="file" name="hoge" id="item-image" multiple accept="image/*">
+          <!-- ✅ name="hoge" を th:field="*{image}" に変更 -->
+          <input type="file" th:field="*{image}" id="item-image" accept="image/*">
         </div>
         <div id="image-list"></div>
       </div>
@@ -33,11 +38,14 @@
       <!-- 商品名と商品説明 -->
       <div class="new-items">
         <div class="weight-bold-text">商品名 <span class="indispensable">必須</span></div>
-        <textarea th:field="*{hoge}" class="items-text" id="item-name"
+        <!-- ✅ th:field="*{description}" だったものを "*{name}" に修正 -->
+        <textarea th:field="*{name}" class="items-text" id="item-name"
                   placeholder="商品名（必須 40文字まで)" maxlength="40"></textarea>
+        
         <div class="items-explain">
           <div class="weight-bold-text">商品の説明 <span class="indispensable">必須</span></div>
-          <textarea th:field="*{hoge}" class="items-text" id="item-info"
+          <!-- ✅ th:field="*{hoge}" を "*{description}" に修正 -->
+          <textarea th:field="*{description}" class="items-text" id="item-info"
                     placeholder="商品の説明（必須 1,000文字まで）" rows="7" maxlength="1000"></textarea>
         </div>
       </div>
@@ -47,13 +55,22 @@
         <div class="weight-bold-text">商品の詳細</div>
         <div class="form">
           <div class="weight-bold-text">カテゴリー <span class="indispensable">必須</span></div>
-          <select th:field="*{hoge}" class="select-box" id="item-category">
-            <option th:each="hoge : ${hoge}" th:value="${hoge}" th:text="${hoge}"></option>
-          </select>
+          <!-- ✅ th:field="*{categoryId}" に修正 -->
+          <select th:field="*{categoryId}" class="select-box">
+              <option value="">---</option>
+              <option th:each="category : ${categories}" th:value="${category.code}" th:text="${category.displayName}">
+              </option>
+            </select>
+          
           <div class="weight-bold-text">商品の状態 <span class="indispensable">必須</span></div>
-          <select th:field="*{hoge}" class="select-box" id="item-sales-status">
-            <option th:each="hoge : ${hoge}" th:value="${hoge}" th:text="${hoge}"></option>
-          </select>
+          <!-- ✅ th:field="*{condition}" に修正 -->
+          <select th:field="*{condition}" class="select-box" id="item-sales-status">
+            <option value="1">---</option>
+         <option th:each="cond : ${conditions}" 
+          th:value="${cond.code}" 
+          th:text="${cond.displayName}">
+         </option>
+         </select>
         </div>
       </div>
 
@@ -61,18 +78,37 @@
       <div class="items-detail">
         <div class="weight-bold-text">配送について</div>
         <div class="form">
+          
           <div class="weight-bold-text">配送料の負担 <span class="indispensable">必須</span></div>
-          <select th:field="*{hoge}" class="select-box" id="item-shipping-fee-status">
-            <option th:each="hoge : ${hoge}" th:value="${hoge}" th:text="${hoge}"></option>
+          <select th:field="*{shippingPayer}" class="select-box" id="item-shipping-fee-status">
+            <option value="">---</option>
+            <!-- ✅ th:each を deliveryfees に、th:text を fee.label に修正 -->
+            <option th:each="fee : ${deliveryfees}" 
+                    th:value="${fee.code}" 
+                    th:text="${fee.label}">
+            </option>
           </select>
+          
           <div class="weight-bold-text">発送元の地域 <span class="indispensable">必須</span></div>
-          <select th:field="*{hoge}" class="select-box" id="item-prefecture">
-            <option th:each="hoge : ${hoge}" th:value="${hoge}" th:text="${hoge}"></option>
+          <select th:field="*{prefectureId}" class="select-box" id="item-prefecture">
+            <option value="">---</option>
+            <!-- ✅ th:text を pref.label に修正 -->
+            <option th:each="pref : ${prefectures}" 
+                    th:value="${pref.code}" 
+                    th:text="${pref.label}">
+            </option>
           </select>
+          
           <div class="weight-bold-text">発送までの日数 <span class="indispensable">必須</span></div>
-          <select th:field="*{hoge}" class="select-box" id="item-scheduled-delivery">
-            <option th:each="hoge : ${hoge}" th:value="${hoge}" th:text="${hoge}"></option>
+          <select th:field="*{shippingDays}" class="select-box" id="item-scheduled-delivery">
+            <option value="">---</option>
+            <!-- ✅ UntilDeliveryは displayName なのでそのまま -->
+            <option th:each="days : ${untildelivery}" 
+                    th:value="${days.code}" 
+                    th:text="${days.displayName}">
+            </option>
           </select>
+          
         </div>
       </div>
 
@@ -88,7 +124,8 @@
               <span class="indispensable">必須</span>
             </div>
             <span class="sell-yen">¥</span>
-            <input th:field="*{hoge}" type="text" class="price-input" id="item-price" placeholder="例）300">
+            <!-- ✅ th:field="*{price}" に修正 -->
+            <input th:field="*{price}" type="text" class="price-input" id="item-price" placeholder="例）300"maxlength="7">
           </div>
           <div class="price-content">
             <span>販売手数料 (10%)</span>
@@ -111,7 +148,7 @@
       <!-- 下部ボタン -->
       <div class="sell-btn-contents">
         <button type="submit" class="sell-btn">出品する</button>
-        <a href="/" class="back-btn">もどる</a>
+        <a th:href="@{/}" class="back-btn">もどる</a>
       </div>
     </form>
   </div>
