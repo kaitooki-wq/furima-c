@@ -11,8 +11,6 @@ import org.springframework.security.core.annotation.AuthenticationPrincipal;
 
 import in.techcamp.furima_c.dto.ItemConvertDetailDto;
 import in.techcamp.furima_c.dto.ItemConvertListDto;
-import in.techcamp.furima_c.dto.ItemDetailDto;
-import in.techcamp.furima_c.dto.ItemListDto;
 import in.techcamp.furima_c.security.CustomUserDetails;
 import in.techcamp.furima_c.service.ItemService;
 import lombok.RequiredArgsConstructor;
