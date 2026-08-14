@@ -40,7 +40,7 @@ public interface OrderMapper {
     Long selectByUserId(Long id);
 
     // 購入する商品の取得
-    @Select("SELECT id,img,name,price,shipping_payer FROM items WHERE id = #{id}")
+    @Select("SELECT id,image,name,price,shipping_payer FROM items WHERE id = #{id}")
     BuyItemInfoDto selectByItemId(Long id);
 
 }
