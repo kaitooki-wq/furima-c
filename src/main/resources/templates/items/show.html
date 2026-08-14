@@ -36,7 +36,7 @@
       </div>
 
       <!-- ログインしているユーザーと出品しているユーザーが、同一人物の場合と同一人物ではない場合で、処理を分けましょう -->
-      <div th:if="${currentUserId !=null}">
+      <div th:if="${currentUserId !=null and currentUserId == item.userId}">
       <a th:href="@{/items/{id}/edit(id=${item.id})}" class="item-red-btn">商品の編集</a>
       <p class="or-text">or</p>
       <form th:action="@{/items/{id}/delete(id=${item.id})}" method="post">
