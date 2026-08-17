@@ -35,6 +35,7 @@ public class SecurityConfig {
             // 認証不要でアクセス許可するパス
             .requestMatchers(
                 "/",
+                "/error",
                 "/users/sign_in/**",
                 "/users/sign_up/**",  
                 "/items",
