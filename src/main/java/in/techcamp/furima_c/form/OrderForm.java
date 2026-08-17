@@ -13,7 +13,7 @@ public class OrderForm {
     private String token;
 
     // 郵便番号
-    @NotBlank(message = "この項目は必須です")
+    @NotBlank(message = "郵便番号の項目は必須です")
     @Pattern(regexp = "^[0-9]{3}-[0-9]{4}$", message = "ハイフンを含めて入力してください")
     private String postalCode;
 
@@ -22,18 +22,18 @@ public class OrderForm {
     private Integer prefecture;
 
     // 市区町村
-    @NotBlank(message = "この項目は必須です")
+    @NotBlank(message = "市区町村の項目は必須です")
     private String city;
 
     // 番地
-    @NotBlank(message = "この項目は必須です")
+    @NotBlank(message = "番地の項目は必須です")
     private String block;
 
     // 建物名
     private String building;
 
     // 電話番号
-    @NotBlank(message = "この項目は必須です")
+    @NotBlank(message = "電話番号の項目は必須です")
     @Pattern(regexp = "^[0-9]+$", message = "整数でお書きください")
     @Size(min = 10, max = 11, message = "電話番号が短すぎます")
     private String phone;
