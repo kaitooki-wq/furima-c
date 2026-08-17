@@ -16,6 +16,7 @@ import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import in.techcamp.furima_c.dto.ItemCreateDto;
 import in.techcamp.furima_c.dto.ItemConvertDetailDto;
 import in.techcamp.furima_c.dto.ItemConvertListDto;
+import in.techcamp.furima_c.dto.ItemEditDto;
 
 // Enum群（出品機能用）
 import in.techcamp.furima_c.enums.Category;
@@ -122,6 +123,60 @@ public class ItemController {
             return "redirect:/";
         }
         return "redirect:/";
+    }
+
+    // 編集画面の表示 (GET)
+    @GetMapping("/items/{itemId}/edit")
+    public String editForm(@PathVariable("itemId") Long itemId, Model model,
+                           @AuthenticationPrincipal CustomUserDetails userDetails) {
+        // ここで、itemIdに基づいて商品情報を取得し、ItemEditDtoに変換する処理を行う
+        ItemEditDto itemEditDto = itemService.getItemForEdit(itemId);
+
+        // 権限チェック: 現在のユーザーが出品者でない場合、詳細画面にリダイレクト
+        if (userDetails == null || userDetails.getUserEntity() == null 
+        || !itemEditDto.getUserId().equals(userDetails.getUserEntity().getId())) {
+        return "redirect:/items/" + itemId;
+    }
+        model.addAttribute("itemEditDto", itemEditDto);
+        model.addAttribute("categories", Category.values());
+        model.addAttribute("conditions", Condition.values());
+        model.addAttribute("deliveryfees", DeliveryFeeType.values());
+        model.addAttribute("prefectures", PrefectureType.values());
+        model.addAttribute("untildelivery", UntilDelivery.values());
+        return "items/edit";
+    }
+
+    @PostMapping("/items/{itemId}/edit")
+    public String updateItem(
+            @PathVariable("itemId") Long itemId,
+            @Validated @ModelAttribute("itemEditDto") ItemEditDto itemEditDto,
+            BindingResult bindingResult, @AuthenticationPrincipal CustomUserDetails userDetails,
+            Model model) { // バリデーションエラーがある場合は編集画面に戻す
+
+        if (bindingResult.hasErrors()) {
+            itemEditDto.setId(itemId); // 商品IDをDTOにセット
+            model.addAttribute("categories", Category.values());
+            model.addAttribute("conditions", Condition.values());
+            model.addAttribute("deliveryfees", DeliveryFeeType.values());
+            model.addAttribute("prefectures", PrefectureType.values());
+            model.addAttribute("untildelivery", UntilDelivery.values());
+            return "items/edit";
+        }
+        // 更新処理を呼び出す
+        Long currentUserId = (userDetails != null && userDetails.getUserEntity() != null) 
+            ? userDetails.getUserEntity().getId() : null;
+
+        try {
+            itemService.updateItem(itemId, itemEditDto, currentUserId);
+        } catch (IllegalStateException e) {
+            log.error("アクセス権限エラー: {}", e.getMessage());
+            return "redirect:/items/" + itemId;
+        } catch (Exception e) {
+            log.error("商品の更新中にエラーが発生しました。商品ID: {}", itemId, e);
+            return "redirect:/items/" + itemId + "/edit";
+    }
+
+    return "redirect:/items/" + itemId;
     }
 
 }
