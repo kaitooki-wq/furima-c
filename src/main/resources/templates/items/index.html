@@ -102,7 +102,7 @@
           <a th:href="@{/items/{id}(id=${item.id})}">
             <div class="item-img-content">
               <div class="messages">
-                <img th:src="@{${item.image}}" class="item-img" alt="image">
+                <img th:src="@{/uploads/{img}(img=${item.image})}" class="item-img" alt="image">
               </div>
 
               <!-- 商品が売れていればsold outを表示しましょう -->
