@@ -133,8 +133,8 @@ public class ItemController {
         ItemEditDto itemEditDto = itemService.getItemForEdit(itemId);
 
         // 権限チェック: 現在のユーザーが出品者でない場合、詳細画面にリダイレクト
-        if (!itemEditDto.getUserId().equals(userDetails.getUserEntity().getId())) {
-        log.warn("権限のないユーザーによる編集アクセス: itemId={}, userId={}", itemId, userDetails.getUserEntity().getId());
+        if (userDetails == null || userDetails.getUserEntity() == null 
+        || !itemEditDto.getUserId().equals(userDetails.getUserEntity().getId())) {
         return "redirect:/items/" + itemId;
     }
         model.addAttribute("itemEditDto", itemEditDto);
@@ -163,17 +163,20 @@ public class ItemController {
             return "items/edit";
         }
         // 更新処理を呼び出す
+        Long currentUserId = (userDetails != null && userDetails.getUserEntity() != null) 
+            ? userDetails.getUserEntity().getId() : null;
+
         try {
-            itemService.updateItem(itemId, itemEditDto, userDetails.getUserEntity().getId());
-        } catch(IllegalStateException e) {
+            itemService.updateItem(itemId, itemEditDto, currentUserId);
+        } catch (IllegalStateException e) {
             log.error("アクセス権限エラー: {}", e.getMessage());
             return "redirect:/items/" + itemId;
         } catch (Exception e) {
             log.error("商品の更新中にエラーが発生しました。商品ID: {}", itemId, e);
             return "redirect:/items/" + itemId + "/edit";
-        }
+    }
 
-        return "redirect:/items/" + itemId;
+    return "redirect:/items/" + itemId;
     }
 
 }
