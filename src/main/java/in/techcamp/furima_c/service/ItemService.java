@@ -154,11 +154,16 @@ return dto;
 }
 
     @Transactional
-    public void updateItem(Long itemId, ItemEditDto itemEditDto) throws IOException {
+    public void updateItem(Long itemId, ItemEditDto itemEditDto, Long currentUserId) throws IOException {
     
     ItemEntity existingItem = itemMapper.findById(itemId);
     if (existingItem == null) {
         throw new IllegalArgumentException("該当の商品が存在しません。ID: " + itemId);
+    }
+
+    // 権限検証
+    if (!existingItem.getUserId().equals(currentUserId)) {
+        throw new IllegalStateException("他人の商品を編集することはできません。");
     }
 
     

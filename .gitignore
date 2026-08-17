@@ -41,3 +41,14 @@ out/
 
 ### .env ###
 .env
+
+### uploads ###
+uploads/*
+!uploads/.gitkeep
+!uploads/1c8d0dbc-cb28-459d-9ed0-3a9db9e5a067
+!uploads/2dc52d91-6962-486f-beaa-94e002f54c1b
+!uploads/2f79bddd-9c28-4a7d-a45f-0f94138f7928
+!uploads/a15813e0-865d-4fd8-9b62-2643db158967
+!uploads/aad7028f-aa9a-4b35-b9d7-53cd87ac5b4b
+!uploads/d3154c72-a3ff-423e-883a-9c52b9dca621
+

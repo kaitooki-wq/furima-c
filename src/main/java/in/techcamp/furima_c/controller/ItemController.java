@@ -127,9 +127,16 @@ public class ItemController {
 
     // 編集画面の表示 (GET)
     @GetMapping("/items/{itemId}/edit")
-    public String editForm(@PathVariable("itemId") Long itemId, Model model) {
+    public String editForm(@PathVariable("itemId") Long itemId, Model model,
+                           @AuthenticationPrincipal CustomUserDetails userDetails) {
         // ここで、itemIdに基づいて商品情報を取得し、ItemEditDtoに変換する処理を行う
         ItemEditDto itemEditDto = itemService.getItemForEdit(itemId);
+
+        // 権限チェック: 現在のユーザーが出品者でない場合、詳細画面にリダイレクト
+        if (!itemEditDto.getUserId().equals(userDetails.getUserEntity().getId())) {
+        log.warn("権限のないユーザーによる編集アクセス: itemId={}, userId={}", itemId, userDetails.getUserEntity().getId());
+        return "redirect:/items/" + itemId;
+    }
         model.addAttribute("itemEditDto", itemEditDto);
         model.addAttribute("categories", Category.values());
         model.addAttribute("conditions", Condition.values());
@@ -143,8 +150,9 @@ public class ItemController {
     public String updateItem(
             @PathVariable("itemId") Long itemId,
             @Validated @ModelAttribute("itemEditDto") ItemEditDto itemEditDto,
-            BindingResult bindingResult,
+            BindingResult bindingResult, @AuthenticationPrincipal CustomUserDetails userDetails,
             Model model) { // バリデーションエラーがある場合は編集画面に戻す
+
         if (bindingResult.hasErrors()) {
             itemEditDto.setId(itemId); // 商品IDをDTOにセット
             model.addAttribute("categories", Category.values());
@@ -156,7 +164,10 @@ public class ItemController {
         }
         // 更新処理を呼び出す
         try {
-            itemService.updateItem(itemId, itemEditDto);
+            itemService.updateItem(itemId, itemEditDto, userDetails.getUserEntity().getId());
+        } catch(IllegalStateException e) {
+            log.error("アクセス権限エラー: {}", e.getMessage());
+            return "redirect:/items/" + itemId;
         } catch (Exception e) {
             log.error("商品の更新中にエラーが発生しました。商品ID: {}", itemId, e);
             return "redirect:/items/" + itemId + "/edit";
