@@ -36,7 +36,7 @@ private final ItemMapper itemMapper;
 private final OrderMapper orderMapper;
 
 // 商品一覧表示 (DTO変換を利用した拡張版を採用)
-public List<ItemConvertListDto> getAllItems(){
+public List<ItemConvertListDto> getAllItems() {
 
 List<ItemListDto> itemlist = itemMapper.findAll();
 List<ItemConvertListDto> dtolist = itemlist.stream().map(item -> {
