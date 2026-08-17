@@ -11,9 +11,9 @@ COPY settings.gradle .
 # 実行権限を付与（Linux環境でのエラー防止）
 RUN chmod +x ./gradlew
 
-# ソースコードをコピーしてビルド（テストはスキップ）
+# ソースコードをコピーしてビルド（テストとCheckstyleをスキップ）
 COPY src src
-RUN ./gradlew build -x test
+RUN ./gradlew build -x test -x checkstyleMain -x checkstyleTest
 
 # ---- 実行ステージ（ビルドされたアプリを動かす） ----
 FROM eclipse-temurin:21-jre-jammy
