@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org" lang="ja">
+
 <head>
   <meta charset="UTF-8">
   <title>Furima</title>
@@ -8,6 +9,7 @@
   <link rel="stylesheet" href="/css/shared/footer.css">
   <link rel="stylesheet" href="/css/items/index.css">
 </head>
+
 <body>
   <div th:replace="~{shared/header :: top-header}"></div>
 
@@ -96,25 +98,28 @@
       <ul class="item-lists">
 
         <!-- 商品のインスタンス変数になにか入っている場合、中身のすべてを展開できるようにしましょう -->
-        <li class="list">
-          <a href="#">
+        <li class="list" th:each="item : ${items}">
+          <a th:href="@{/items/{id}(id=${item.id})}">
             <div class="item-img-content">
               <div class="messages">
-                <img src="/images/item-sample.png" class="item-img" alt="">
+                <img th:src="@{${item.image}}" class="item-img" alt="image">
               </div>
 
               <!-- 商品が売れていればsold outを表示しましょう -->
-              <div class="sold-out">
+              <div th:if="${item.soldout}" class="sold-out">
                 <span>Sold Out!!</span>
               </div>
 
             </div>
             <div class="item-info">
-              <h3 class="item-name">
+              <h3 class="item-name" th:text="${item.name}">
                 商品名
               </h3>
               <div class="item-price">
-                <span>販売価格円<br>配送料負担</span>
+                <span>[[${item.price}]] 円<br><span>
+
+                    [[${item.shippingPayer}]]</span>
+                </span>
                 <div class="star-btn">
                   <img src="/images/star.png" class="star-icon" alt="">
                   <span class="star-count">0</span>
@@ -124,7 +129,7 @@
           </a>
         </li>
         <!-- 商品がない場合のみ、ダミー商品を表示しましょう -->
-        <li class="list">
+        <li class="list" th:if="${items.isEmpty()}">
           <a href="#">
             <img src="/images/item-sample.png" class="item-img" alt="">
             <div class="item-info">
@@ -145,11 +150,12 @@
     <!-- /商品一覧 -->
   </div>
 
-  <a href="#" class="purchase-btn">
+  <a href="/items/new" class="purchase-btn">
     <span class="purchase-btn-text">出品する</span>
     <img src="/images/icon-camera.png" class="purchase-btn-icon" alt="出品する">
   </a>
 
   <div th:replace="~{shared/footer :: main-footer}"></div>
 </body>
+
 </html>

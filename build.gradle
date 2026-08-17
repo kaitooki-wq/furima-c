@@ -22,13 +22,13 @@ dependencies {
 	// ★ 不足していた標準Webモジュール（WebFluxから変更）
 	implementation 'org.springframework.boot:spring-boot-starter-web'
 	
-	implementation 'org.springframework.boot:spring-boot-starter-security'
 	implementation 'org.springframework.boot:spring-boot-starter-thymeleaf'
-	implementation 'org.flywaydb:flyway-database-postgresql:10.10.0'
-	implementation 'org.flywaydb:flyway-core:10.10.0'
-	implementation 'org.thymeleaf.extras:thymeleaf-extras-springsecurity6'
+	implementation 'org.springframework.boot:spring-boot-starter-security'
 	implementation 'org.springframework.boot:spring-boot-starter-validation'
-	compileOnly 'org.projectlombok:lombok'
+	implementation 'org.thymeleaf.extras:thymeleaf-extras-springsecurity6'
+
+	// Database & Flyway
+	implementation 'org.flywaydb:flyway-core' 
 	runtimeOnly 'org.postgresql:postgresql'
 	
 	// MyBatis
@@ -37,13 +37,17 @@ dependencies {
 	// Lombok
 	compileOnly 'org.projectlombok:lombok'
 	annotationProcessor 'org.projectlombok:lombok'
+
+	// Test (存在しないStarterを削除し、標準のテスト環境に統一)
 	testImplementation 'org.springframework.boot:spring-boot-starter-test'
 	testImplementation 'org.springframework.security:spring-security-test'
+	
 	testCompileOnly 'org.projectlombok:lombok'
 	testAnnotationProcessor 'org.projectlombok:lombok'
-
 	testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
-	
+
+	// .env読み込み
+	implementation 'me.paulschwarz:spring-dotenv:4.0.0'
 }
 
 tasks.named('test') {
