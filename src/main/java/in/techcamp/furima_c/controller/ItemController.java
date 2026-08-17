@@ -12,13 +12,13 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 
-// DTO群（両方のブランチで使われているものを統合）
+// DTO群
 import in.techcamp.furima_c.dto.ItemCreateDto;
 import in.techcamp.furima_c.dto.ItemConvertDetailDto;
 import in.techcamp.furima_c.dto.ItemConvertListDto;
 import in.techcamp.furima_c.dto.ItemEditDto;
 
-// Enum群（出品機能用）
+// Enum群
 import in.techcamp.furima_c.enums.Category;
 import in.techcamp.furima_c.enums.Condition;
 import in.techcamp.furima_c.enums.DeliveryFeeType;
@@ -37,7 +37,7 @@ public class ItemController {
 
     private final ItemService itemService;
 
-    // 商品一覧表示 (mainブランチの変更を反映)
+    // 商品一覧表示
     @GetMapping("/")
     public String getAllItems(Model model){
         List<ItemConvertListDto> items = itemService.getAllItems();
@@ -46,14 +46,13 @@ public class ItemController {
         return "items/index";
     }
 
-    // 商品詳細表示 (mainブランチで追加された機能)
+    // 商品詳細表示
     @GetMapping("/items/{id}")
     public String showItem(
         @PathVariable("id")Long itemId,
         Model model,
         @AuthenticationPrincipal CustomUserDetails userDetails) {
 
-        // service層で処理
         ItemConvertDetailDto itemDetail = itemService.showItemDetail(itemId);
         model.addAttribute("item", itemDetail);
         
@@ -64,7 +63,7 @@ public class ItemController {
         return "items/show";
     }
 
-    // 商品出品画面表示 (現在のブランチの機能)
+    // 商品出品画面表示
     @GetMapping("/items/new")
     public String newItemForm(Model model) {
         model.addAttribute("itemCreateDto", new ItemCreateDto());
@@ -76,13 +75,18 @@ public class ItemController {
         return "items/new";
     }
 
-    // 商品出品処理 (現在のブランチの機能)
+    // 商品出品処理
     @PostMapping("/items/new")
     public String addItem(@Validated @ModelAttribute("itemCreateDto")ItemCreateDto itemCreateDto,BindingResult bindingResult,
                           @AuthenticationPrincipal CustomUserDetails userDetails,
                           Model model
                         ) {
         
+        
+        if (itemCreateDto.getImage() == null || itemCreateDto.getImage().isEmpty()) {
+            bindingResult.rejectValue("image", "error.image", "画像を選択してください");
+        }
+
         if(bindingResult.hasErrors()){
             model.addAttribute("categories", Category.values());
             model.addAttribute("conditions", Condition.values());
@@ -96,7 +100,7 @@ public class ItemController {
             itemService.createItem(itemCreateDto,currentUserId);
             
         }catch(Exception e){
-            log.error("出品処理中にエラーが発生しました", e); // エラー原因をターミナルに出すための一文
+            log.error("出品処理中にエラーが発生しました", e);
             
             model.addAttribute("categories", Category.values());
             model.addAttribute("conditions", Condition.values());
@@ -109,7 +113,7 @@ public class ItemController {
         return "redirect:/";
     }
 
-    // 商品削除 (両方のブランチで共通)
+    // 商品削除
     @PostMapping("/items/{id}/delete")
     public String deleteItem(
         @PathVariable("id")Long itemId,
@@ -129,14 +133,12 @@ public class ItemController {
     @GetMapping("/items/{itemId}/edit")
     public String editForm(@PathVariable("itemId") Long itemId, Model model,
                            @AuthenticationPrincipal CustomUserDetails userDetails) {
-        // ここで、itemIdに基づいて商品情報を取得し、ItemEditDtoに変換する処理を行う
         ItemEditDto itemEditDto = itemService.getItemForEdit(itemId);
 
-        // 権限チェック: 現在のユーザーが出品者でない場合、詳細画面にリダイレクト
         if (userDetails == null || userDetails.getUserEntity() == null 
         || !itemEditDto.getUserId().equals(userDetails.getUserEntity().getId())) {
-        return "redirect:/items/" + itemId;
-    }
+            return "redirect:/items/" + itemId;
+        }
         model.addAttribute("itemEditDto", itemEditDto);
         model.addAttribute("categories", Category.values());
         model.addAttribute("conditions", Condition.values());
@@ -146,15 +148,16 @@ public class ItemController {
         return "items/edit";
     }
 
+    // 商品更新処理 (POST)
     @PostMapping("/items/{itemId}/edit")
     public String updateItem(
             @PathVariable("itemId") Long itemId,
             @Validated @ModelAttribute("itemEditDto") ItemEditDto itemEditDto,
             BindingResult bindingResult, @AuthenticationPrincipal CustomUserDetails userDetails,
-            Model model) { // バリデーションエラーがある場合は編集画面に戻す
+            Model model) {
 
         if (bindingResult.hasErrors()) {
-            itemEditDto.setId(itemId); // 商品IDをDTOにセット
+            itemEditDto.setId(itemId);
             model.addAttribute("categories", Category.values());
             model.addAttribute("conditions", Condition.values());
             model.addAttribute("deliveryfees", DeliveryFeeType.values());
@@ -162,7 +165,7 @@ public class ItemController {
             model.addAttribute("untildelivery", UntilDelivery.values());
             return "items/edit";
         }
-        // 更新処理を呼び出す
+
         Long currentUserId = (userDetails != null && userDetails.getUserEntity() != null) 
             ? userDetails.getUserEntity().getId() : null;
 
@@ -174,9 +177,9 @@ public class ItemController {
         } catch (Exception e) {
             log.error("商品の更新中にエラーが発生しました。商品ID: {}", itemId, e);
             return "redirect:/items/" + itemId + "/edit";
-    }
+        }
 
-    return "redirect:/items/" + itemId;
+        return "redirect:/items/" + itemId;
     }
 
 }
