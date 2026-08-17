@@ -14,7 +14,7 @@
   <!-- 商品の概要 -->
   <div class="item-show">
     <div class="item-box">
-      <h2 class="name">
+      <h2 class="name" th:text="${item.name}">
         商品名
       </h2>
       <div class="item-img-content">
@@ -112,7 +112,7 @@
     <a href="#" class="change-item-btn">後ろの商品 ＞</a>
   </div>
   <!-- 詳細ページで表示されている商品のカテゴリー名を表示しましょう -->
-  <a href="#" class="another-item">商品のカテゴリー名をもっと見る</a>
+  <a href="#" class="another-item">[[${item.categoryId}]]をもっと見る</a>
 </div>
 
   <div th:replace="~{shared/footer :: main-footer}"></div>
