@@ -42,7 +42,6 @@ out/
 ### .env ###
 .env
 
-### uploads ###
-uploads/*
-!uploads/.gitkeep
-
+### Uploads ###
+/uploads/*
+!/uploads/.gitkeep

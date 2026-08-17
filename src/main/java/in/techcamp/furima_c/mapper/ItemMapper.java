@@ -33,7 +33,7 @@ void insert(ItemEntity item);
 
     @Select("""
             SELECT
-            i.id, i.name, i.image, i.description,
+            i.id, i.name, i.image, i.description, i.user_id,
             i.category_id, i.condition, i.shipping_payer, i.prefecture_id,
             i.shipping_days, i.price,
             u.nickname
