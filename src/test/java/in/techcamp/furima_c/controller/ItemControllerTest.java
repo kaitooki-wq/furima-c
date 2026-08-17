@@ -76,7 +76,7 @@ class ItemControllerTest {
     @Test
     @DisplayName("POST /items/{itemId}/edit - 正常的にデータ送信時、詳細画面へリダイレクトされる")
     void updateItem_Success_RedirectsToDetail() throws Exception {
-        doNothing().when(itemService).updateItem(anyLong(), any(ItemEditDto.class));
+        doNothing().when(itemService).updateItem(anyLong(), any(ItemEditDto.class), anyLong());
 
         mockMvc.perform(MockMvcRequestBuilders.post("/items/1/edit")
                         .param("name", "修正された商品名")
