@@ -18,17 +18,17 @@
         商品名
       </h2>
       <div class="item-img-content">
-        <img src="/images/item-sample.png" class="item-box-img" alt="">
+        <img th:src="@{/uploads/{img}(img=${item.image})}" class="item-box-img" alt="">
 
         <!-- 商品が売れている場合は、sold outを表示しましょう -->
-        <div class="sold-out">
+        <div  th:if="${item.soldout}" class="sold-out">
           <span>Sold Out!!</span>
         </div>
 
       </div>
       <div class="item-price-box">
-        <span class="item-price" th:text="${item.price}">
-          ¥ 999,999,999
+        <span class="item-price">
+          [[${item.price}]] 円
         </span>
         <span class="item-postage" th:text="${item.shippingPayer}">
           配送料負担
@@ -36,19 +36,21 @@
       </div>
 
       <!-- ログインしているユーザーと出品しているユーザーが、同一人物の場合と同一人物ではない場合で、処理を分けましょう -->
-      <div th:if="${currentUserId !=null and currentUserId == item.userId}">
+      <th:block th:if="${currentUserId !=null and currentUserId == item.userId}">
       <a th:href="@{/items/{id}/edit(id=${item.id})}" class="item-red-btn">商品の編集</a>
       <p class="or-text">or</p>
       <form th:action="@{/items/{id}/delete(id=${item.id})}" method="post">
         <button type="submit" class="item-destroy">削除</button>
       </form>
-      </div>
+    </th:block>
 
       <!-- 商品が売れていない場合はこちらを表示しましょう -->
+       <th:block th:if="${currentUserId != item.userId and !item.soldout}">
       <a th:href="@{/order/{id}(id=${item.id})}" class="item-red-btn">購入画面に進む</a>
+      </th:block>
 
       <div class="item-explain-box">
-        <span>商品説明</span>
+        <span>[[${item.description}]]</span>
       </div>
       <table class="detail-table">
         <tbody>
