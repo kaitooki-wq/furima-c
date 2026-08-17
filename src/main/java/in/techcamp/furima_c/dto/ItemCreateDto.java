@@ -18,23 +18,23 @@ public class ItemCreateDto {
     @NotBlank(message = "商品の説明は必須です")
     private String description;
    
-    @NotNull(message = "選択してください")
+    @NotNull(message = "カテゴリーを選択してください")
     @Min(1)
     private Long categoryId;
     
-    @NotNull(message = "選択してください")
+    @NotNull(message = "商品の状態を選択してください")
     @Min(1)
     private Integer condition;
      
-    @NotNull(message = "選択してください")
+    @NotNull(message = "配送の負担を選択してください")
     @Min(1)
     private Integer shippingPayer;
      
-    @NotNull(message = "選択してください")
+    @NotNull(message = "配送元の地域を選択してください")
     @Min(1)
     private Integer prefectureId;
      
-    @NotNull(message = "選択してください")
+    @NotNull(message = "配送までの日数を選択してください")
     @Min(1)
     private Integer shippingDays;
     
