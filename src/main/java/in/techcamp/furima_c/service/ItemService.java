@@ -17,6 +17,7 @@ import in.techcamp.furima_c.dto.ItemCreateDto;
 import in.techcamp.furima_c.dto.ItemDetailDto;
 import in.techcamp.furima_c.dto.ItemListDto;
 import in.techcamp.furima_c.entity.ItemEntity;
+import in.techcamp.furima_c.dto.ItemEditDto;
 import in.techcamp.furima_c.enums.Category;
 import in.techcamp.furima_c.enums.Condition;
 import in.techcamp.furima_c.enums.DeliveryFeeType;
@@ -25,108 +26,178 @@ import in.techcamp.furima_c.enums.UntilDelivery;
 import in.techcamp.furima_c.mapper.ItemMapper;
 import in.techcamp.furima_c.mapper.OrderMapper;
 import lombok.RequiredArgsConstructor;
+import org.springframework.transaction.annotation.Transactional;
 
 @Service
 @RequiredArgsConstructor
 public class ItemService {
 
-    private final ItemMapper itemMapper;
-    private final OrderMapper orderMapper;
+private final ItemMapper itemMapper;
+private final OrderMapper orderMapper;
 
-    // 商品一覧表示 (DTO変換を利用した拡張版を採用)
-    public List<ItemConvertListDto> getAllItems() {
+// 商品一覧表示 (DTO変換を利用した拡張版を採用)
+public List<ItemConvertListDto> getAllItems() {
 
-        List<ItemListDto> itemlist = itemMapper.findAll();
-        List<ItemConvertListDto> dtolist = itemlist.stream().map(item -> {
-            ItemConvertListDto dto = new ItemConvertListDto();
-            dto.setId(item.getId());
-            dto.setImage(item.getImage());
-            dto.setName(item.getName());
-            dto.setPrice(item.getPrice());
-            dto.setSoldout(orderMapper.isSoldOut(item.getId()));
-            dto.setShippingPayer(DeliveryFeeType.fromCode(item.getShippingPayer()).getLabel());
-            return dto;
-        }).collect(Collectors.toList());
+List<ItemListDto> itemlist = itemMapper.findAll();
+List<ItemConvertListDto> dtolist = itemlist.stream().map(item -> {
+ItemConvertListDto dto = new ItemConvertListDto();
+dto.setId(item.getId());
+dto.setImage(item.getImage());
+dto.setName(item.getName());
+dto.setPrice(item.getPrice());
+dto.setSoldout(orderMapper.isSoldOut(item.getId()));
+dto.setShippingPayer(DeliveryFeeType.fromCode(item.getShippingPayer()).getLabel());
+return dto;
+}).collect(Collectors.toList());
 
-        return dtolist;
+return dtolist;
+}
+
+// 商品削除
+public void deleteItem(Long id, Long userId) throws Exception{
+ItemEntity existingItem = itemMapper.findById(id);
+if( existingItem == null){
+throw new IllegalArgumentException("指定された商品が見つかりません");
+}
+
+// item tableの中に入ってるuserIdと現在ログインしているuserIdを比べる
+if (!existingItem.getUserId().equals(userId)){
+throw new SecurityException("他のユーザーの商品は削除できません");
+}
+
+itemMapper.deleteByItemId(id);
+}
+
+// 新規出品
+public void createItem(ItemCreateDto itemCreateDto, Long currentUserId) throws IOException {
+MultipartFile imageFile = itemCreateDto.getImage();
+String savedFileName = null;
+
+if (imageFile != null && !imageFile.isEmpty()){
+String originalName = imageFile.getOriginalFilename();
+
+if(originalName != null && originalName.contains(".")){
+String extension = originalName.substring(originalName.lastIndexOf("."));
+savedFileName = UUID.randomUUID().toString() + extension;
+
+Path uploadPath = Paths.get("uploads/").toAbsolutePath().normalize();
+if (!Files.exists(uploadPath)) {
+Files.createDirectories(uploadPath);
+}
+
+Path filePath = uploadPath.resolve(savedFileName);
+imageFile.transferTo(filePath);
+}
+} else {
+throw new IllegalArgumentException("画像ファイルが選択されていません");
+}
+
+// DB保存
+ItemEntity entity = new ItemEntity();
+
+entity.setUserId(currentUserId); // 出品者のIDをセット
+entity.setName(itemCreateDto.getName());
+entity.setImage(savedFileName);
+entity.setDescription(itemCreateDto.getDescription());
+entity.setCategoryId(itemCreateDto.getCategoryId());
+entity.setCondition(itemCreateDto.getCondition());
+entity.setShippingPayer(itemCreateDto.getShippingPayer());
+entity.setPrefectureId(itemCreateDto.getPrefectureId());
+entity.setShippingDays(itemCreateDto.getShippingDays());
+entity.setPrice(itemCreateDto.getPrice());
+
+itemMapper.insert(entity);
+}
+
+// 商品詳細
+public ItemConvertDetailDto showItemDetail(Long id) {
+
+ItemDetailDto item = itemMapper.findByitemId(id);
+ItemConvertDetailDto dto = new ItemConvertDetailDto();
+
+dto.setId(item.getId());
+dto.setUserId(item.getUserId());
+dto.setName(item.getName());
+dto.setImage(item.getImage());
+dto.setPrice(item.getPrice());
+dto.setDescription(item.getDescription());
+dto.setNickname(item.getNickname());
+dto.setSoldout(orderMapper.isSoldOut(item.getId()));
+dto.setShippingPayer(DeliveryFeeType.fromCode(item.getShippingPayer()).getLabel());
+dto.setCategoryId(Category.fromCode(item.getCategoryId()).getDisplayName());
+dto.setCondition(Condition.fromCode(item.getCondition()).getDisplayName());
+dto.setPrefectureId(PrefectureType.fromCode(item.getPrefectureId()).getLabel());
+dto.setShippingDays(UntilDelivery.fromCode(item.getShippingDays()).getDisplayName());
+
+return dto;
+}
+
+// 商品編集用のDTOを取得するメソッド
+    public ItemEditDto getItemForEdit(Long itemId) {
+    ItemEntity entity = itemMapper.findById(itemId);
+    if (entity == null) {
+        throw new IllegalArgumentException("該当の商品が存在しません。ID: " + itemId);
     }
 
-    // 商品削除
-    public void deleteItem(Long id, Long userId) throws Exception {
-        ItemEntity existingItem = itemMapper.findById(id);
-        if(existingItem == null) {
-            throw new IllegalArgumentException("指定された商品が見つかりません");
-        }
+    ItemEditDto dto = new ItemEditDto();
+    dto.setId(entity.getId());
+    dto.setUserId(entity.getUserId());
+    dto.setName(entity.getName());
+    dto.setDescription(entity.getDescription());
+    dto.setCategoryId(entity.getCategoryId());
+    dto.setCondition(entity.getCondition());
+    dto.setShippingPayer(entity.getShippingPayer());
+    dto.setPrefectureId(entity.getPrefectureId());
+    dto.setShippingDays(entity.getShippingDays());
+    dto.setPrice(entity.getPrice());
+    return dto;
+}
 
-        // item tableの中に入ってるuserIdと現在ログインしているuserIdを比べる
-        if (!existingItem.getUserId().equals(userId)) {
-            throw new SecurityException("他のユーザーの商品は削除できません");
-        }
-
-        itemMapper.deleteByItemId(id);
+    @Transactional
+    public void updateItem(Long itemId, ItemEditDto itemEditDto, Long currentUserId) throws IOException {
+    
+    ItemEntity existingItem = itemMapper.findById(itemId);
+    if (existingItem == null) {
+        throw new IllegalArgumentException("該当の商品が存在しません。ID: " + itemId);
     }
 
-    // 新規出品
-    public void createItem(ItemCreateDto itemCreateDto, Long currentUserId) throws IOException {
-        MultipartFile imageFile = itemCreateDto.getImage();
-        String savedFileName = null;
+    // 権限検証
+    if (!existingItem.getUserId().equals(currentUserId)) {
+        throw new IllegalStateException("他人の商品を編集することはできません。");
+    }
 
-        if (imageFile != null && !imageFile.isEmpty()) {
-            String originalName = imageFile.getOriginalFilename();
+    
+    MultipartFile imageFile = itemEditDto.getImage();
+    String savedFileName = existingItem.getImage(); 
 
-            if(originalName != null && originalName.contains(".")) {
-                String extension = originalName.substring(originalName.lastIndexOf("."));
-                savedFileName = UUID.randomUUID().toString() + extension;
+    // 新しい画像がアップロードされた場合のみ、画像を保存してファイル名を更新
+    if (imageFile != null && !imageFile.isEmpty()) {
+        String originalName = imageFile.getOriginalFilename();
 
-                Path uploadPath = Paths.get("uploads/").toAbsolutePath().normalize();
-                if (!Files.exists(uploadPath)) {
-                    Files.createDirectories(uploadPath);
-                }
+        if (originalName != null && originalName.contains(".")) {
+            String extension = originalName.substring(originalName.lastIndexOf("."));
+            savedFileName = UUID.randomUUID().toString() + extension;
 
-                Path filePath = uploadPath.resolve(savedFileName);
-                imageFile.transferTo(filePath);
+            Path uploadPath = Paths.get("uploads/").toAbsolutePath().normalize();
+            if (!Files.exists(uploadPath)) {
+                Files.createDirectories(uploadPath);
             }
-        } else {
-            throw new IllegalArgumentException("画像ファイルが選択されていません");
+
+            Path filePath = uploadPath.resolve(savedFileName);
+            imageFile.transferTo(filePath);
         }
-
-        // DB保存
-        ItemEntity entity = new ItemEntity();
-
-        entity.setUserId(currentUserId); // 出品者のIDをセット
-        entity.setName(itemCreateDto.getName());
-        entity.setImage(savedFileName);
-        entity.setDescription(itemCreateDto.getDescription());
-        entity.setCategoryId(itemCreateDto.getCategoryId());
-        entity.setCondition(itemCreateDto.getCondition());
-        entity.setShippingPayer(itemCreateDto.getShippingPayer());
-        entity.setPrefectureId(itemCreateDto.getPrefectureId());
-        entity.setShippingDays(itemCreateDto.getShippingDays());
-        entity.setPrice(itemCreateDto.getPrice());
-
-        itemMapper.insert(entity);
     }
 
-    // 商品詳細
-    public ItemConvertDetailDto showItemDetail(Long id) {
-
-        ItemDetailDto item = itemMapper.findByitemId(id);
-        ItemConvertDetailDto dto = new ItemConvertDetailDto();
-
-        dto.setId(item.getId());
-        dto.setUserId(item.getUserId());
-        dto.setName(item.getName());
-        dto.setImage(item.getImage());
-        dto.setPrice(item.getPrice());
-        dto.setDescription(item.getDescription());
-        dto.setNickname(item.getNickname());
-        dto.setSoldout(orderMapper.isSoldOut(item.getId()));
-        dto.setShippingPayer(DeliveryFeeType.fromCode(item.getShippingPayer()).getLabel());
-        dto.setCategoryId(Category.fromCode(item.getCategoryId()).getDisplayName());
-        dto.setCondition(Condition.fromCode(item.getCondition()).getDisplayName());
-        dto.setPrefectureId(PrefectureType.fromCode(item.getPrefectureId()).getLabel());
-        dto.setShippingDays(UntilDelivery.fromCode(item.getShippingDays()).getDisplayName());
-
-        return dto;
+    
+    existingItem.setName(itemEditDto.getName());
+    existingItem.setImage(savedFileName); 
+    existingItem.setDescription(itemEditDto.getDescription());
+    existingItem.setCategoryId(itemEditDto.getCategoryId());
+    existingItem.setCondition(itemEditDto.getCondition());
+    existingItem.setShippingPayer(itemEditDto.getShippingPayer());
+    existingItem.setPrefectureId(itemEditDto.getPrefectureId());
+    existingItem.setShippingDays(itemEditDto.getShippingDays());
+    existingItem.setPrice(itemEditDto.getPrice());
+    itemMapper.updateItem(existingItem);
     }
 }
