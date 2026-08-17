@@ -7,7 +7,6 @@ import lombok.Data;
 @Data
 public class ItemEntity {
     private Long id;
-    private Long userId;
     private String name;
     private String image;
     private String description;
@@ -17,5 +16,5 @@ public class ItemEntity {
     private Integer prefectureId;
     private Integer shippingDays;
     private Integer price;
-    private Integer userId; 
+    private Long userId; 
 }
