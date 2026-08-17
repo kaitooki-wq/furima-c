@@ -16,6 +16,7 @@ import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import in.techcamp.furima_c.dto.ItemCreateDto;
 import in.techcamp.furima_c.dto.ItemConvertDetailDto;
 import in.techcamp.furima_c.dto.ItemConvertListDto;
+import in.techcamp.furima_c.dto.ItemEditDto;
 
 // Enum群（出品機能用）
 import in.techcamp.furima_c.enums.Category;
@@ -127,23 +128,40 @@ public class ItemController {
     // 編集画面の表示 (GET)
     @GetMapping("/items/{itemId}/edit")
     public String editForm(@PathVariable("itemId") Long itemId, Model model) {
-        ItemEditForm form = itemService.getItemForEdit(itemId);
-        model.addAttribute("itemForm", form);
+        // ここで、itemIdに基づいて商品情報を取得し、ItemEditDtoに変換する処理を行う
+        ItemEditDto itemEditDto = itemService.getItemForEdit(itemId);
+        model.addAttribute("itemEditDto", itemEditDto);
+        model.addAttribute("categories", Category.values());
+        model.addAttribute("conditions", Condition.values());
+        model.addAttribute("deliveryfees", DeliveryFeeType.values());
+        model.addAttribute("prefectures", PrefectureType.values());
+        model.addAttribute("untildelivery", UntilDelivery.values());
         return "items/edit";
     }
 
-    // 2. 編集処理の実行 (POST)
     @PostMapping("/items/{itemId}/edit")
     public String updateItem(
             @PathVariable("itemId") Long itemId,
-            @Valid @ModelAttribute("itemForm") ItemEditForm form,
-            BindingResult bindingResult) {
+            @Validated @ModelAttribute("itemEditDto") ItemEditDto itemEditDto,
+            BindingResult bindingResult,
+            Model model) { // バリデーションエラーがある場合は編集画面に戻す
         if (bindingResult.hasErrors()) {
-            form.setId(itemId);
+            itemEditDto.setId(itemId); // 商品IDをDTOにセット
+            model.addAttribute("categories", Category.values());
+            model.addAttribute("conditions", Condition.values());
+            model.addAttribute("deliveryfees", DeliveryFeeType.values());
+            model.addAttribute("prefectures", PrefectureType.values());
+            model.addAttribute("untildelivery", UntilDelivery.values());
             return "items/edit";
         }
+        // 更新処理を呼び出す
+        try {
+            itemService.updateItem(itemId, itemEditDto);
+        } catch (Exception e) {
+            log.error("商品の更新中にエラーが発生しました。商品ID: {}", itemId, e);
+            return "redirect:/items/" + itemId + "/edit";
+        }
 
-        itemService.updateItem(itemId, form);
         return "redirect:/items/" + itemId;
     }
 

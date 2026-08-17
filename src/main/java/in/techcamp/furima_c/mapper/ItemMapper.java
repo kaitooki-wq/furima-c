@@ -8,6 +8,7 @@ import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Options;
 import org.apache.ibatis.annotations.Param;
 import org.apache.ibatis.annotations.Select;
+import org.apache.ibatis.annotations.Update;
 
 import in.techcamp.furima_c.dto.ItemDetailDto;
 import in.techcamp.furima_c.dto.ItemListDto;
@@ -41,4 +42,22 @@ void insert(ItemEntity item);
             WHERE i.id = #{id}
             """)
     ItemDetailDto findByitemId(Long id);
+
+    // 商品更新
+    @Update("""
+            UPDATE items
+            SET name = #{name},
+                description = #{description},
+                category_id = #{categoryId},
+                condition = #{condition},
+                shipping_payer = #{shippingPayer},
+                prefecture_id = #{prefectureId},
+                shipping_days = #{shippingDays},
+                price = #{price},
+                image = #{image}
+            WHERE id = #{id}
+            """)
+    void updateItem(ItemEntity item);
 }
+
+

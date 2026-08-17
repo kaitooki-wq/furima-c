@@ -16,6 +16,5 @@ public class ItemEntity {
     private Integer shippingPayer;
     private Integer prefectureId;
     private Integer shippingDays;
-    private Integer price;
-    private Integer userId; 
+    private Integer price; 
 }
