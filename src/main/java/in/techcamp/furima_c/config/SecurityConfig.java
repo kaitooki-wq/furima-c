@@ -38,8 +38,7 @@ public class SecurityConfig {
                 "/error",
                 "/users/sign_in/**",
                 "/users/sign_up/**",  
-                "/items",
-                "/items/*",
+                "/items/{id:\\d+}",
                 "/items/search"
             ).permitAll()
 
