@@ -65,7 +65,7 @@
           <div class="weight-bold-text">商品の状態 <span class="indispensable">必須</span></div>
           <!-- ✅ th:field="*{condition}" に修正 -->
           <select th:field="*{condition}" class="select-box" id="item-sales-status">
-            <option value="1">---</option>
+            <option value="">---</option>
          <option th:each="cond : ${conditions}" 
           th:value="${cond.code}" 
           th:text="${cond.displayName}">
