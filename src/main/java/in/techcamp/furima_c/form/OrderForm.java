@@ -14,7 +14,7 @@ public class OrderForm {
 
     // 郵便番号
     @NotBlank(message = "郵便番号の項目は必須です")
-    @Pattern(regexp = "^[0-9]{3}-[0-9]{4}$", message = "ハイフンを含めて入力してください")
+    @Pattern(regexp = "^[0-9]{3}-[0-9]{4}$", message = "郵便番号はハイフンを含めて入力してください")
     private String postalCode;
 
     // 都道府県
@@ -34,7 +34,7 @@ public class OrderForm {
 
     // 電話番号
     @NotBlank(message = "電話番号の項目は必須です")
-    @Pattern(regexp = "^[0-9]+$", message = "整数でお書きください")
+    @Pattern(regexp = "^[0-9]+$", message = "電話番号は整数でお書きください")
     @Size(min = 10, max = 11, message = "電話番号が短すぎます")
     private String phone;
 
